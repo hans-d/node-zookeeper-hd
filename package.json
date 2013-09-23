@@ -1,0 +1,40 @@
+{
+  "name": "node-zookeeper-hd",
+  "version": "0.0.0",
+  "description": "Higher level (normalized) zookeeper client",
+  "author": "Hans Donner",
+  "license": "MIT",
+  "keywords": [
+    "zookeeper",
+    "apache"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hans-d/node-zookeeper-hd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hans-d/node-zookeeper-hd/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=0.10.18"
+  },
+  "dependencies": {
+    "zookeeper": "~3.4.5-1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "mocha": "~1.13.0",
+    "grunt-mocha-test": "~0.7.0",
+    "sinon": "~1.7.3",
+    "mockery": "~1.4.0",
+    "grunt-bumpup": "~0.3.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-banner": "~0.1.4",
+    "should": "~1.3.0"
+  }
+}
