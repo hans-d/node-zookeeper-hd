@@ -26,30 +26,30 @@ module.exports = class SimpleClient
     return path.join @root, relativePath
 
   create: (zkPath, value, flags, onReady) ->
-    @log.info 'create #{value} @ #{path}'
+    @log.info "create #{value} @ #{path}"
     @client.a_create @fullPath(zkPath), value, flags, normalizeCallBack onReady
 
   exists: (zkPath, watch, onData) ->
-    @log.debug 'exists @ #{zkPath}'
+    @log.debug "exists @ #{zkPath}"
     @client.a_exists @fullPath(zkPath), watch, (resultCode, error, stat) ->
       return onData(null, true, stat) if resultCode == 0
       return onData(null, false) if error == 'no node'
       onData error, false
 
   get: (zkPath, watch, onData) ->
-    @log.debug 'get @ #{zkPath}'
+    @log.debug "get @ #{zkPath}"
     @client.a_get @fullPath(zkPath), watch, normalizeCallBack onData
 
   getChildren: (zkPath, watch, onData) ->
-    @log.debug 'getChildren @ #{zkPath}'
+    @log.debug "getChildren @ #{zkPath}"
     @client.a_get_children @fullPath(zkPath), watch, normalizeCallBack onData
 
   mkdir: (zkPath, onReady) ->
     # NB: callback is different!
-    @log.info 'mkdir {#zkPath}'
+    @log.info "mkdir {#zkPath}"
     @client.mkdirp @fullPath(zkPath), onReady
 
   set: (zkPath, value, version, onReady) ->
-    @log.info 'set #{value} (v #{version}) @ #{zkPath}'
+    @log.info "set #{value} (v #{version}) @ #{zkPath}"
     @client.a_set @fullPath(zkPath), value, version, normalizeCallBack onReady
 
