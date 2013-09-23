@@ -39,7 +39,7 @@ module.exports = (grunt) ->
     clean:
       build:
         options:
-        no-write: true
+          no-write: true
         src: ['index.js*', 'lib/*']
 
     coffee:
@@ -99,19 +99,19 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'git:commit:release', ->
     msg = grunt.config 'release.options.commitMessage'
-  return runSimple "git commit -m '#{msg}'"
+    return runSimple "git commit -m '#{msg}'"
 
   grunt.registerTask 'git:isClean', ->
     res = runSilent 'git status -s'
     return unless res.output
     grunt.log.error 'Uncommitted changes'
     grunt.log.writelns res.output
-  return false
+    return false
 
   grunt.registerTask 'git:tag:release', ->
     tag = grunt.config 'release.options.tagName'
     msg = grunt.config 'release.options.tagMessage'
-  return runSimple "git tag  #{tag} -m '#{msg}'"
+    return runSimple "git tag  #{tag} -m '#{msg}'"
 
   _semverSync = 'node_modules/semver-sync/bin/semver-sync'
 
@@ -120,9 +120,9 @@ module.exports = (grunt) ->
     return false unless res.code == 0
     if res.code == 0
       grunt.log.writeln res.output
-    return
+      return
     grunt.error res.output
-  return false
+    return false
 
 
 # release:
