@@ -1,6 +1,6 @@
 {
   "name": "node-zookeeper-hd",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Higher level (normalized) zookeeper client",
   "author": "Hans Donner",
   "license": "MIT",
