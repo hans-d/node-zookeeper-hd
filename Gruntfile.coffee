@@ -14,6 +14,7 @@ runSimple = (cmd) ->
 module.exports = (grunt) ->
 
   grunt.loadNpmTasks 'grunt-banner'
+  grunt.loadNpmTasks 'grunt-bumpup'
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-mocha-test'
