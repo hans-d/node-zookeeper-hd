@@ -87,12 +87,18 @@ module.exports = (grunt) ->
     type = type || 'patch'
     grunt.task.run 'bumpup:' + type
 
+  grunt.registerTask 'release:git', [
+    'git:add:package.json', 'git:commit:release', 'git:tag:release'
+  ]
+
+  grunt.registerTask 'release', [ 'release:prep', 'release:bump', 'release:git' ]
+
 
   grunt.registerTask 'git:add', (file) ->
     res = runSimple "git add #{file}"
 
 
-  grunt.registerTask 'git:commit', ->
+  grunt.registerTask 'git:commit:release', ->
     msg = grunt.config release.options.commitMessage
     return runSimple "git commit -m #{msg}"
 
@@ -103,7 +109,7 @@ module.exports = (grunt) ->
     grunt.log.writelns res.output
     return false
 
-  grunt.registerTask 'git:tag', ->
+  grunt.registerTask 'git:tag:release', ->
     tag = grunt.config release.options.tagName
     msg = grunt.config.release.options.tagMessage
     return runSimple "git tag  #{tag} -m #{msg}"
