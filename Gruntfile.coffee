@@ -88,20 +88,20 @@ module.exports = (grunt) ->
     type = type || 'patch'
     grunt.task.run 'bumpup:' + type
 
-  grunt.registerTask 'release:git', [
-    'git:add:package.json', 'git:commit:release', 'git:tag:release'
-  ]
+  grunt.registerTask 'release:commit', [ 'git:add:package.json', 'git:commit:release', 'git:tag:release' ]
 
-  grunt.registerTask 'release', [ 'release:prep', 'release:bump', 'release:git' ]
+  grunt.registerTask 'release:patch', [ 'release:prep', 'release:bump:patch', 'release:commit' ]
+
+  grunt.registerTask 'release:push', ['git:push', 'git:pushTags' ]
+  grunt.registerTask 'release:publish', ['release:push', 'npm:publish' ]
 
 
   grunt.registerTask 'git:add', (file) ->
     res = runSimple "git add #{file}"
 
-
   grunt.registerTask 'git:commit:release', ->
-    msg = grunt.config release.options.commitMessage
-    return runSimple "git commit -m #{msg}"
+    msg = grunt.config 'release.options.commitMessage'
+    return runSimple "git commit -m '#{msg}'"
 
   grunt.registerTask 'git:isClean', ->
     res = runSilent 'git status -s'
@@ -110,16 +110,26 @@ module.exports = (grunt) ->
     grunt.log.writelns res.output
     return false
 
-  grunt.registerTask 'git:tag:release', ->
-    tag = grunt.config release.options.tagName
-    msg = grunt.config.release.options.tagMessage
-    return runSimple "git tag  #{tag} -m #{msg}"
+  grunt.registerTask 'git:push', ->
+    return runSimple 'git push'
 
-  _semverSync = 'node_modules/semver-sync/bin/semver-sync'
+  grunt.registerTask 'git:pushTags', ->
+    return runSimple 'git push --tags'
+
+  grunt.registerTask 'git:tag:release', ->
+    tag = grunt.config 'release.options.tagName'
+    msg = grunt.config 'release.options.tagMessage'
+    return runSimple "git tag  #{tag} -m '#{msg}'"
+
+
+  grunt.registerTask 'npm:publish', (tag) ->
+    tag = ' -- tag %s' % [tag] if tag
+    return runSimple "npm publish #{tag}"
+
 
   grunt.registerTask 'semver:isSynced', ->
-    res = runSilent "#{_semverSync} --verify"
-    #return false unless res.code == 0
+    res = runSilent "node_modules/.bin/semver-sync --verify"
+    return false unless res.code == 0
     if res.code == 0
       grunt.log.writeln res.output
       return
@@ -127,5 +137,5 @@ module.exports = (grunt) ->
     return false
 
 
-  # release:
-  # bump, stage+commit+tag+push, publish
+# release:
+# bump, stage+commit+tag+push, publish
