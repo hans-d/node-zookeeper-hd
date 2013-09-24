@@ -123,9 +123,9 @@ module.exports = (grunt) ->
 
 
   grunt.registerTask 'npm:publish', (tag) ->
-    tag = ' -- tag %s' % [tag] if tag
+    tag = tag || ''
+    tag = ' -- tag ' + tag if tag
     return runSimple "npm publish #{tag}"
-
 
   grunt.registerTask 'semver:isSynced', ->
     res = runSilent "node_modules/.bin/semver-sync --verify"
