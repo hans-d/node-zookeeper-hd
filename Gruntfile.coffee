@@ -82,7 +82,7 @@ module.exports = (grunt) ->
         files:
           src: ['index.js', 'lib/*.js' ]
 
-  grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced', 'build', 'test' ]
+  grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced', 'build', 'test', 'git:isClean' ]
 
   grunt.registerTask 'release:bump', (type) ->
     type = type || 'patch'
