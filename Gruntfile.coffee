@@ -91,6 +91,8 @@ module.exports = (grunt) ->
   grunt.registerTask 'release:commit', [ 'git:add:package.json', 'git:commit:release', 'git:tag:release' ]
 
   grunt.registerTask 'release:patch', [ 'release:prep', 'release:bump:patch', 'release:commit' ]
+  grunt.registerTask 'release:minor', [ 'release:prep', 'release:bump:minor', 'release:commit' ]
+  grunt.registerTask 'release:major', [ 'release:prep', 'release:bump:major', 'release:commit' ]
 
   grunt.registerTask 'release:push', ['git:push', 'git:pushTags' ]
   grunt.registerTask 'release:publish', ['release:push', 'npm:publish' ]
