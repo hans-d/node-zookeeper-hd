@@ -13,18 +13,8 @@ runSimple = (cmd) ->
 
 module.exports = (grunt) ->
 
-  grunt.loadNpmTasks 'grunt-banner'
   grunt.loadNpmTasks 'grunt-bumpup'
   grunt.loadNpmTasks 'grunt-contrib-clean'
-  grunt.loadNpmTasks 'grunt-contrib-coffee'
-  grunt.loadNpmTasks 'grunt-mocha-test'
-
-  grunt.registerTask 'default', [ 'test', 'build' ]
-  grunt.registerTask 'test', [ 'mochaTest:unitDot' ]
-  grunt.registerTask 'test:spec', [ 'mochaTest:unitSpec' ]
-  grunt.registerTask 'build', [ 'clean', 'compile' ]
-  grunt.registerTask 'compile', [ 'compile:coffee' ]
-  grunt.registerTask 'compile:coffee', [ 'coffee', 'usebanner:compiled_coffee' ]
 
   grunt.initConfig
     pkgFile : 'package.json'
@@ -36,53 +26,14 @@ module.exports = (grunt) ->
           pkg: 'package.json'
       files: [ 'package.json' ]
 
-    clean:
-      build:
-        options:
-          no-write: true
-        src: ['index.js*', 'lib/*']
-
-    coffee:
-      compile:
-        options:
-          bare: true
-          sourceMap: true
-        files: [
-          expand: true
-          flatten: false
-          cwd: 'src'
-          src: ['*.coffee', 'lib/*.coffee']
-          dest: ''
-          ext: '.js'
-        ]
-
-    mochaTest:
-      unitSpec:
-        options:
-          reporter: 'spec'
-          require: 'coffee-script'
-        src: ['test/unit/*.coffee']
-      unitDot:
-        options:
-          reporter: 'dot'
-          require: 'coffee-script'
-        src: ['test/unit/*.coffee']
-
     release:
       options:
         commitMessage: 'release <%= pkg.version %>'
         tagName: 'release-<%= pkg.version %>'
         tagMessage: 'release <%= pkg.version %>'
 
-    usebanner:
-      compiled_coffee:
-        options:
-          position: 'top'
-          banner: '// This file has been generated from coffee source files\n'
-        files:
-          src: ['index.js', 'lib/*.js' ]
 
-  grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced', 'build', 'test', 'git:isClean' ]
+  grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced' ]
 
   grunt.registerTask 'release:bump', (type) ->
     type = type || 'patch'

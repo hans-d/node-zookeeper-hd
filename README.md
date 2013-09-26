@@ -1,6 +1,10 @@
 node-zookeeper-hd
 =================
 
+*Please use zookeeper-hd instead of this version*
+Name has changed, this will refer to the latest zookeeper-hd version.
+
+
 Higher level (normalized) client for Zookeeper.
 
 SimpleClient:
