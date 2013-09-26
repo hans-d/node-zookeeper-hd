@@ -1,13 +1,9 @@
 {
   "name": "node-zookeeper-hd",
   "version": "0.0.2",
-  "description": "Higher level (normalized) zookeeper client",
+  "description": "Higher level (normalized) zookeeper client (deprecated: use zookeeper-hd)",
   "author": "Hans Donner",
   "license": "MIT",
-  "keywords": [
-    "zookeeper",
-    "apache"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hans-d/node-zookeeper-hd.git"
@@ -23,7 +19,7 @@
     "node": ">=0.10.18"
   },
   "dependencies": {
-    "zookeeper": "*"
+    "zookeeper-hd": "*"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
