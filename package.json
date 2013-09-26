@@ -1,5 +1,5 @@
 {
-  "name": "node-zookeeper-hd",
+  "name": "zookeeper-hd",
   "version": "0.0.2",
   "description": "Higher level (normalized) zookeeper client",
   "author": "Hans Donner",

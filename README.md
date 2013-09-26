@@ -1,5 +1,5 @@
-node-zookeeper-hd
-=================
+zookeeper-hd
+============
 
 Higher level (normalized) client for Zookeeper.
 
