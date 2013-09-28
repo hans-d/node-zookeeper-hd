@@ -17,7 +17,7 @@
   },
   "main": "js/src/index.js",
   "scripts": {
-    "test": "echo \"Install 'grunt-cli' (globally) and run 'grunt test'\" && exit 1"
+    "test": "node_modules/.bin/grunt test:spec"
   },
   "engines": {
     "node": ">=0.10.18"
@@ -40,6 +40,7 @@
     "shelljs": "~0.2.6",
     "semver-sync": "~1.2.0",
     "grunt-bumpup": "~0.4.1",
-    "blanket": "~1.1.5"
+    "blanket": "~1.1.5",
+    "grunt-cli": "~0.1.9"
   }
 }
