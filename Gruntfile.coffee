@@ -84,15 +84,11 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced', 'build', 'test', 'git:isClean' ]
 
-  grunt.registerTask 'release:bump', (type) ->
-    type = type || 'patch'
-    grunt.task.run 'bumpup:' + type
-
   grunt.registerTask 'release:commit', [ 'git:add:package.json', 'git:commit:release', 'git:tag:release' ]
 
-  grunt.registerTask 'release:patch', [ 'release:prep', 'release:bump:patch', 'release:commit' ]
-  grunt.registerTask 'release:minor', [ 'release:prep', 'release:bump:minor', 'release:commit' ]
-  grunt.registerTask 'release:major', [ 'release:prep', 'release:bump:major', 'release:commit' ]
+  grunt.registerTask 'release:patch', [ 'release:prep', 'semver:bump:patch', 'release:commit' ]
+  grunt.registerTask 'release:minor', [ 'release:prep', 'semver:bump:minor', 'release:commit' ]
+  grunt.registerTask 'release:major', [ 'release:prep', 'semver:bump:major', 'release:commit' ]
 
   grunt.registerTask 'release:push', ['git:push', 'git:pushTags' ]
   grunt.registerTask 'release:publish', ['release:push', 'npm:publish' ]
@@ -128,6 +124,10 @@ module.exports = (grunt) ->
     tag = tag || ''
     tag = ' -- tag ' + tag if tag
     return runSimple "npm publish #{tag}"
+
+  grunt.registerTask 'semver:bump', (type) ->
+    type = type || 'patch'
+    grunt.task.run 'bumpup:' + type
 
   grunt.registerTask 'semver:isSynced', ->
     res = runSilent "node_modules/.bin/semver-sync --verify"

@@ -7,6 +7,8 @@ zookeeperStub = require '../lib/zookeeperStub'
 # SimpleClient uses Zookeeper client, here we will use a test double for it.
 # (so we can unit test without needing a zookeeper instance)
 # Set up for modified require-s is done in #before
+#
+# simply passes the various data, so very generic fake values are used in the tests
 
 describe 'SimpleClient Class', ->
   # adjusted require
