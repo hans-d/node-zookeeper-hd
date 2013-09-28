@@ -15,12 +15,20 @@ module.exports = (grunt) ->
   config =
     pkgFile : 'package.json'
     pkg: grunt.file.readJSON 'package.json'
+    dir:
+      source:
+        coffee: 'coffee'
+      target:
+          js: 'js'
+
   grunt.util._.extend config, loadConfig './grunt/config/'
   grunt.initConfig config
 
+
   # task definitions
   require('load-grunt-tasks')(grunt)
-  grunt.loadTasks 'grunt/tasks'
+  grunt.loadTasks './grunt/tasks'
+
 
   # task aliasses
   grunt.registerTask 'default', [ 'test', 'build' ]
@@ -43,3 +51,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'release:push', ['git:push', 'git:pushTags' ]
   grunt.registerTask 'release:publish', ['release:push', 'npm:publish' ]
+

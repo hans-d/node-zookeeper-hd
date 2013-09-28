@@ -7,9 +7,9 @@ module.exports = {
     files: [
       expand: true
       flatten: false
-      cwd: 'coffee'
+      cwd: '<%= dir.source.coffee %>'
       src: ['**/*.coffee']
-      dest: 'js'
+      dest: '<%= dir.target.js %>'
       ext: '.js'
     ]
 

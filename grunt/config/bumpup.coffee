@@ -2,7 +2,7 @@ module.exports = {
 
   options:
     updateProps:
-      pkg: 'package.json'
-  files: [ 'package.json' ]
+      pkg: '<%= pkgFile %>'
+  files: [ '<%= pkgFile %>' ]
 
 }
