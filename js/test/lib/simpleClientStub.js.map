@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "simpleClientStub.js",
+  "sourceRoot": "../../../coffee/test/lib/",
+  "sources": [
+    "simpleClientStub.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA,IAAA,YAAA;;AAAA,CAAA,EAAuB,GAAjB,CAAN;CACE;;CAAA,EAAU,KAAV,CAAU;;CAAV,EACQ,GAAR,GAAQ;;CADR,EAEQ,GAAR,GAAQ;;CAFR,EAGA,MAAK;;CAHL,EAIa,MAAA,EAAb;;CAJA,EAKO,EAAP,IAAO;;CALP,EAMA,MAAK;;CANL;;CADF"
+}

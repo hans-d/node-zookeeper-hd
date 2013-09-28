@@ -35,7 +35,11 @@ module.exports = SimpleClient = (function() {
   }
 
   SimpleClient.prototype.fullPath = function(relativePath) {
-    return path.join(this.root, relativePath);
+    return this.joinPath(this.root, relativePath);
+  };
+
+  SimpleClient.prototype.joinPath = function(base, extra) {
+    return path.join(base, extra);
   };
 
   SimpleClient.prototype.create = function(zkPath, value, flags, onReady) {

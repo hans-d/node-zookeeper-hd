@@ -23,7 +23,10 @@ module.exports = class SimpleClient
     @root = options.root || ''
 
   fullPath: (relativePath) ->
-    return path.join @root, relativePath
+    return @joinPath @root, relativePath
+
+  joinPath: (base, extra) ->
+    return path.join base, extra
 
   create: (zkPath, value, flags, onReady) ->
     @log.info "create #{value} @ #{path}"

@@ -1,12 +1,8 @@
 should = require 'should'
-mockery = require 'mockery'
 sinon = require 'sinon'
+mockery = require 'mockery'
+SimpleClientStub = require '../lib/simpleClientStub'
 
-zookeeperStub = require '../lib/zookeeperStub'
-
-# PlusClient uses Zookeeper client, here we will use a test double for it.
-# (so we can unit test without needing a zookeeper instance)
-# Set up for modified require-s is done in #before
 
 describe 'PlusClient Class', ->
   PlusClient = null
@@ -14,14 +10,12 @@ describe 'PlusClient Class', ->
 
   before ->
     # control require-d modules
-    mockery.enable()
-    mockery.registerAllowable '../../src/lib/PlusClient'        # module under test
-    mockery.registerAllowables [                                # allowed require-s
-      './SimpleClient', 'path', 'async', 'underscore'
-    ]
+    mockery.enable useCleanCache: true
+    mockery.registerAllowable '../../src/lib/PlusClient'
+
     # replace modules for testing
-    mockery.registerMock 'zookeeper', zookeeperStub.Client
-    # load module under test, using replaced require-d modules
+    mockery.registerMock './SimpleClient', SimpleClientStub
+#    load module under test, using replaced require-d modules
     PlusClient = require '../../src/lib/PlusClient'
 
   after ->
@@ -204,34 +198,53 @@ describe 'PlusClient Class', ->
         mockMethod = client = mock = stub = null
 
       it 'can be called using SimpleClient signature', (done) ->
-        mockMethod.withArgs('/foo', 1).yields null
+        mockMethod.withArgs('/foo', 1).yields null, ['bar']
         client.getChildren '/foo', 1, (err) ->
           mock.verify()
           done()
 
       it 'can be called using plus signature with options', (done) ->
-        mockMethod.withArgs('/foo', 1).yields null
+        mockMethod.withArgs('/foo', 1).yields null, ['bar']
         client.getChildren '/foo', watch: 1, (err) ->
           mock.verify()
           done()
 
       it 'can be called using plus signature without options', (done) ->
-        mockMethod.withArgs('/foo', null).yields null
+        mockMethod.withArgs('/foo', null).yields null, ['bar']
         client.getChildren '/foo', (err) ->
           mock.verify()
           done()
 
       it 'can create the root path with createPathIfNotExists', (done) ->
-        mockMethod.withArgs('/foo', null).yields null
+        mockMethod.withArgs('/foo', null).yields null, ['bar']
         mock.expects('mkdir').once().withArgs('/foo').yields null
         client.getChildren '/foo', createPathIfNotExists: true, (err) ->
           mock.verify()
           done()
 
       it 'does not create the root path without createPathIfNotExists', (done) ->
-        mockMethod.withArgs('/foo', null).yields null
+        mockMethod.withArgs('/foo', null).yields null, ['bar']
         mock.expects('mkdir').never()
         client.getChildren '/foo', (err) ->
+          mock.verify()
+          done()
+
+      it 'can retrieve the child values with getChildData', (done) ->
+        mockMethod.withArgs('/foo', null).yields null, ['foo', 'bar']
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns '/foo/foo'
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns '/foo/bar'
+        mock.expects('get').once().withArgs('/foo/foo').yields null, "foo-result"
+        mock.expects('get').once().withArgs('/foo/bar').yields null, "bar-result"
+        client.getChildren '/foo', getChildData: true, (err, res) ->
+          should.not.exist err
+          res.should.eql foo: "foo-result", bar: "bar-result"
+          mock.verify()
+          done()
+
+      it 'does not retrieve the child values without getChildData', (done) ->
+        mockMethod.withArgs('/foo', null).yields null, ['foo', 'bar']
+        client.getChildren '/foo', (err, res) ->
+          res.should.eql ['foo', 'bar']
           mock.verify()
           done()
 

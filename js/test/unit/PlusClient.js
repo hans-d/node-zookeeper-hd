@@ -1,24 +1,25 @@
 // This file has been generated from coffee source files
 
-var mockery, should, sinon, zookeeperStub;
+var SimpleClientStub, mockery, should, sinon;
 
 should = require('should');
 
-mockery = require('mockery');
-
 sinon = require('sinon');
 
-zookeeperStub = require('../lib/zookeeperStub');
+mockery = require('mockery');
+
+SimpleClientStub = require('../lib/simpleClientStub');
 
 describe('PlusClient Class', function() {
   var PlusClient, client, mock, stub;
   PlusClient = null;
   client = mock = stub = null;
   before(function() {
-    mockery.enable();
+    mockery.enable({
+      useCleanCache: true
+    });
     mockery.registerAllowable('../../src/lib/PlusClient');
-    mockery.registerAllowables(['./SimpleClient', 'path', 'async', 'underscore']);
-    mockery.registerMock('zookeeper', zookeeperStub.Client);
+    mockery.registerMock('./SimpleClient', SimpleClientStub);
     return PlusClient = require('../../src/lib/PlusClient');
   });
   after(function() {
@@ -252,14 +253,14 @@ describe('PlusClient Class', function() {
         return mockMethod = client = mock = stub = null;
       });
       it('can be called using SimpleClient signature', function(done) {
-        mockMethod.withArgs('/foo', 1).yields(null);
+        mockMethod.withArgs('/foo', 1).yields(null, ['bar']);
         return client.getChildren('/foo', 1, function(err) {
           mock.verify();
           return done();
         });
       });
       it('can be called using plus signature with options', function(done) {
-        mockMethod.withArgs('/foo', 1).yields(null);
+        mockMethod.withArgs('/foo', 1).yields(null, ['bar']);
         return client.getChildren('/foo', {
           watch: 1
         }, function(err) {
@@ -268,14 +269,14 @@ describe('PlusClient Class', function() {
         });
       });
       it('can be called using plus signature without options', function(done) {
-        mockMethod.withArgs('/foo', null).yields(null);
+        mockMethod.withArgs('/foo', null).yields(null, ['bar']);
         return client.getChildren('/foo', function(err) {
           mock.verify();
           return done();
         });
       });
       it('can create the root path with createPathIfNotExists', function(done) {
-        mockMethod.withArgs('/foo', null).yields(null);
+        mockMethod.withArgs('/foo', null).yields(null, ['bar']);
         mock.expects('mkdir').once().withArgs('/foo').yields(null);
         return client.getChildren('/foo', {
           createPathIfNotExists: true
@@ -284,10 +285,36 @@ describe('PlusClient Class', function() {
           return done();
         });
       });
-      return it('does not create the root path without createPathIfNotExists', function(done) {
-        mockMethod.withArgs('/foo', null).yields(null);
+      it('does not create the root path without createPathIfNotExists', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null, ['bar']);
         mock.expects('mkdir').never();
         return client.getChildren('/foo', function(err) {
+          mock.verify();
+          return done();
+        });
+      });
+      it('can retrieve the child values with getChildData', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns('/foo/foo');
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns('/foo/bar');
+        mock.expects('get').once().withArgs('/foo/foo').yields(null, "foo-result");
+        mock.expects('get').once().withArgs('/foo/bar').yields(null, "bar-result");
+        return client.getChildren('/foo', {
+          getChildData: true
+        }, function(err, res) {
+          should.not.exist(err);
+          res.should.eql({
+            foo: "foo-result",
+            bar: "bar-result"
+          });
+          mock.verify();
+          return done();
+        });
+      });
+      return it('does not retrieve the child values without getChildData', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
+        return client.getChildren('/foo', function(err, res) {
+          res.should.eql(['foo', 'bar']);
           mock.verify();
           return done();
         });

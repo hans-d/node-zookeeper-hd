@@ -15,7 +15,9 @@ describe('SimpleClient Class', function() {
   SimpleClient = null;
   clientWithoutRoot = clientWithRoot = stub = null;
   before(function() {
-    mockery.enable();
+    mockery.enable({
+      useCleanCache: true
+    });
     mockery.registerAllowable('../../src/lib/SimpleClient');
     mockery.registerAllowables(['path']);
     mockery.registerMock('zookeeper', zookeeperStub.Client);

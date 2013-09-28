@@ -63,14 +63,32 @@ module.exports = class PlusClient
     if !_.isObject options
       @log.debug 'getChildren: non object options, moving it to options.watch'
       options = watch: options
-    options = _.defaults options, watch: null, createPathIfNotExists: false
+    options = _.defaults options,
+      watch: null
+      createPathIfNotExists: false
+      getChildData: false
 
     async.waterfall [
+
       (asyncReady) =>
         return asyncReady() unless options.createPathIfNotExists
         @createPathIfNotExists zkPath, options, asyncReady
+
       (asyncReady) =>
         @client.getChildren zkPath, options.watch, asyncReady
+
+      (children, asyncReady) =>
+        return asyncReady null, children unless options.getChildData
+        childData = {}
+
+        async.each children, (child, asyncChildReady) =>
+          @get @client.joinPath(zkPath, child), options, (err, result) ->
+            return asyncChildReady err if err
+            childData[child] = result
+            asyncChildReady()
+        , (err) ->
+          asyncReady err, childData
+
     ], (err, result) ->
       onData err, result
 
@@ -102,6 +120,11 @@ module.exports = class PlusClient
 
     @log.info "createPathIfNotExists #{zkPath}"
     @mkdir zkPath, options, onReady
+
+  createPathIfNotExist: (zkPath, options, onReady) ->
+    # Backward compatible
+    @log.info 'createPathIfNotExist deprecated - use createPathIfNotExists instead'
+    createPathIfNotExists zkPath, options, onReady
 
   createOrUpdate: (zkPath, value, options, onReady) ->
     # for backward compatability added extraArg

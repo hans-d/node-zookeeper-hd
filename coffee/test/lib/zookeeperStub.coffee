@@ -3,7 +3,7 @@
 
 # use instead of the real zookeeper client to test without zookeeper instance
 
-exports.Client = class ApiStub
+exports.Client = class ZookeeperApi
 
   constructor: (options) ->
     @options = options

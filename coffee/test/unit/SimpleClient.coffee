@@ -18,7 +18,7 @@ describe 'SimpleClient Class', ->
 
   before ->
     # control require-d modules
-    mockery.enable()
+    mockery.enable useCleanCache: true
     mockery.registerAllowable '../../src/lib/SimpleClient'        # module under test
     mockery.registerAllowables ['path']                           # allowed require-s
     # replace modules for testing

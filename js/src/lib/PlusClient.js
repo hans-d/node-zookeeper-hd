@@ -94,7 +94,8 @@ module.exports = PlusClient = (function() {
     }
     options = _.defaults(options, {
       watch: null,
-      createPathIfNotExists: false
+      createPathIfNotExists: false,
+      getChildData: false
     });
     return async.waterfall([
       function(asyncReady) {
@@ -104,6 +105,23 @@ module.exports = PlusClient = (function() {
         return _this.createPathIfNotExists(zkPath, options, asyncReady);
       }, function(asyncReady) {
         return _this.client.getChildren(zkPath, options.watch, asyncReady);
+      }, function(children, asyncReady) {
+        var childData;
+        if (!options.getChildData) {
+          return asyncReady(null, children);
+        }
+        childData = {};
+        return async.each(children, function(child, asyncChildReady) {
+          return _this.get(_this.client.joinPath(zkPath, child), options, function(err, result) {
+            if (err) {
+              return asyncChildReady(err);
+            }
+            childData[child] = result;
+            return asyncChildReady();
+          });
+        }, function(err) {
+          return asyncReady(err, childData);
+        });
       }
     ], function(err, result) {
       return onData(err, result);
@@ -136,6 +154,11 @@ module.exports = PlusClient = (function() {
     }
     this.log.info("createPathIfNotExists " + zkPath);
     return this.mkdir(zkPath, options, onReady);
+  };
+
+  PlusClient.prototype.createPathIfNotExist = function(zkPath, options, onReady) {
+    this.log.info('createPathIfNotExist deprecated - use createPathIfNotExists instead');
+    return createPathIfNotExists(zkPath, options, onReady);
   };
 
   PlusClient.prototype.createOrUpdate = function(zkPath, value, options, onReady) {
