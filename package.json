@@ -41,6 +41,8 @@
     "semver-sync": "~1.2.0",
     "grunt-bumpup": "~0.4.1",
     "blanket": "~1.1.5",
-    "grunt-cli": "~0.1.9"
+    "grunt-cli": "~0.1.9",
+    "load-grunt-tasks": "~0.1.0",
+    "glob": "~3.2.6"
   }
 }
