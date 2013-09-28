@@ -22,6 +22,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', [ 'test', 'build' ]
   grunt.registerTask 'test', [ 'mochaTest:unitDot' ]
   grunt.registerTask 'test:spec', [ 'mochaTest:unitSpec' ]
+  grunt.registerTask 'test:coverage', [ 'mochaTest:unitJS', 'mochaTest:coverageJS' ]
   grunt.registerTask 'build', [ 'clean', 'compile' ]
   grunt.registerTask 'compile', [ 'compile:coffee' ]
   grunt.registerTask 'compile:coffee', [ 'coffee', 'usebanner:compiled_coffee' ]
@@ -40,7 +41,7 @@ module.exports = (grunt) ->
       build:
         options:
           no-write: true
-        src: ['index.js*', 'lib/*']
+        src: [ 'js/*' ]
 
     coffee:
       compile:
@@ -50,9 +51,9 @@ module.exports = (grunt) ->
         files: [
           expand: true
           flatten: false
-          cwd: 'src'
-          src: ['*.coffee', 'lib/*.coffee']
-          dest: ''
+          cwd: 'coffee'
+          src: ['**/*.coffee']
+          dest: 'js'
           ext: '.js'
         ]
 
@@ -61,12 +62,23 @@ module.exports = (grunt) ->
         options:
           reporter: 'spec'
           require: 'coffee-script'
-        src: ['test/unit/*.coffee']
+        src: ['coffee/test/unit/*.coffee']
       unitDot:
         options:
           reporter: 'dot'
           require: 'coffee-script'
-        src: ['test/unit/*.coffee']
+        src: ['coffee/test/unit/*.coffee']
+      unitJS:
+        options:
+          reporter: 'dot'
+          require: 'grunt/blanketJS'
+        src: ['js/test/unit/*.js']
+      coverageJS:
+        options:
+          reporter: 'html-cov'
+          quiet: true
+          captureFile: 'coverageJS.html'
+        src: ['js/test/unit/*.js']
 
     release:
       options:
@@ -80,7 +92,7 @@ module.exports = (grunt) ->
           position: 'top'
           banner: '// This file has been generated from coffee source files\n'
         files:
-          src: ['index.js', 'lib/*.js' ]
+          src: [ 'js/**/*.js' ]
 
   grunt.registerTask 'release:prep', [ 'git:isClean', 'semver:isSynced', 'build', 'test', 'git:isClean' ]
 
