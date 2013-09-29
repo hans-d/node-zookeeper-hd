@@ -1,5 +1,6 @@
 Zookeeper = require 'zookeeper'
 path = require 'path'
+_ = require 'underscore'
 
 normalizeCallBack = (onData) ->
   return (resultCode, error, data1, data2) ->
@@ -26,6 +27,9 @@ module.exports = class SimpleClient
     return @joinPath @root, relativePath
 
   joinPath: (base, extra) ->
+    extra = extra || ''
+    base = path.join.apply @, base if _.isArray base
+    extra = path.join.apply @, extra if _.isArray extra
     return path.join base, extra
 
   create: (zkPath, value, flags, onReady) ->

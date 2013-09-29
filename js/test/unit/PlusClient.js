@@ -18,7 +18,7 @@ describe('PlusClient Class', function() {
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerAllowable('../../src/lib/PlusClient');
+    mockery.registerAllowables(['../../src/lib/PlusClient', 'async', 'underscore']);
     mockery.registerMock('./SimpleClient', SimpleClientStub);
     return PlusClient = require('../../src/lib/PlusClient');
   });
@@ -297,8 +297,8 @@ describe('PlusClient Class', function() {
         mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
         mock.expects('joinPath').once().withArgs('/foo', 'foo').returns('/foo/foo');
         mock.expects('joinPath').once().withArgs('/foo', 'bar').returns('/foo/bar');
-        mock.expects('get').once().withArgs('/foo/foo').yields(null, "foo-result");
-        mock.expects('get').once().withArgs('/foo/bar').yields(null, "bar-result");
+        mock.expects('get').once().withArgs('/foo/foo').yields(null, {}, "foo-result");
+        mock.expects('get').once().withArgs('/foo/bar').yields(null, {}, "bar-result");
         return client.getChildren('/foo', {
           getChildData: true
         }, function(err, res) {

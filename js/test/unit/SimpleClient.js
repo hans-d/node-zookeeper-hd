@@ -18,8 +18,7 @@ describe('SimpleClient Class', function() {
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerAllowable('../../src/lib/SimpleClient');
-    mockery.registerAllowables(['path']);
+    mockery.registerAllowables(['../../src/lib/SimpleClient', 'path', 'underscore']);
     mockery.registerMock('zookeeper', zookeeperStub.Client);
     return SimpleClient = require('../../src/lib/SimpleClient');
   });
@@ -60,8 +59,7 @@ describe('SimpleClient Class', function() {
       });
     });
     afterEach(function() {
-      clientWithoutRoot = null;
-      return clientWithRoot = null;
+      return clientWithoutRoot = clientWithRoot = stub = null;
     });
     it('returns the same path witout a root', function() {
       return clientWithoutRoot.fullPath('/somePath').should.equal('/somePath');
@@ -69,11 +67,40 @@ describe('SimpleClient Class', function() {
     it('returns a path with root when a root is present', function() {
       return clientWithRoot.fullPath('/somePath').should.equal('/some/Root/somePath');
     });
-    it('returns 1 slash between root and path when path has no leading slash', function() {
-      return clientWithRoot.fullPath('somePath').should.equal('/some/Root/somePath');
-    });
     return it('return the exact path if no root and path is without leading slash', function() {
       return clientWithoutRoot.fullPath('somePath').should.equal('somePath');
+    });
+  });
+  describe('#joinPath', function() {
+    var client;
+    client = null;
+    beforeEach(function() {
+      return client = new SimpleClient();
+    });
+    afterEach(function() {
+      client = null;
+      return clientWithoutRoot = clientWithRoot = stub = null;
+    });
+    it('does not use the root path', function() {
+      clientWithRoot = new SimpleClient({
+        root: '/some/Root'
+      });
+      return clientWithRoot.joinPath('/somePath', 'here').should.equal('/somePath/here');
+    });
+    it('returns 1 slash between base and extra when extra has no leading slash', function() {
+      return client.joinPath('base', 'extra').should.equal('base/extra');
+    });
+    it('accepts 1 argument', function() {
+      return client.joinPath('base').should.equal('base');
+    });
+    it('accepts an array as 1st argument', function() {
+      return client.joinPath(['base', 'path']).should.equal('base/path');
+    });
+    it('accepts an array as 2nd argument', function() {
+      return client.joinPath('base', ['extra', 'path']).should.equal('base/extra/path');
+    });
+    return it('accepts an array as both arguments', function() {
+      return client.joinPath(['base', 'path'], ['to', 'here']).should.equal('base/path/to/here');
     });
   });
   describe('#create', function() {

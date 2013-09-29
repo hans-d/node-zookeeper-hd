@@ -82,7 +82,7 @@ module.exports = class PlusClient
         childData = {}
 
         async.each children, (child, asyncChildReady) =>
-          @get @client.joinPath(zkPath, child), options, (err, result) ->
+          @get @joinPath(zkPath, child), options, (err, stat, result) ->
             return asyncChildReady err if err
             childData[child] = result
             asyncChildReady()
@@ -92,6 +92,8 @@ module.exports = class PlusClient
     ], (err, result) ->
       onData err, result
 
+  joinPath: (base, extra) ->
+    @client.joinPath base, extra
 
   mkdir: (zkPath, options, onReady) ->
     # options currently not used, added for future use / uniform signature

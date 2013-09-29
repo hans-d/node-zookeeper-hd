@@ -19,8 +19,7 @@ describe 'SimpleClient Class', ->
   before ->
     # control require-d modules
     mockery.enable useCleanCache: true
-    mockery.registerAllowable '../../src/lib/SimpleClient'        # module under test
-    mockery.registerAllowables ['path']                           # allowed require-s
+    mockery.registerAllowables [ '../../src/lib/SimpleClient', 'path', 'underscore' ]
     # replace modules for testing
     mockery.registerMock 'zookeeper', zookeeperStub.Client
     # load module under test, using replaced require-d modules
@@ -57,8 +56,7 @@ describe 'SimpleClient Class', ->
       clientWithRoot = new SimpleClient root: '/some/Root'
 
     afterEach ->
-      clientWithoutRoot = null
-      clientWithRoot = null
+      clientWithoutRoot = clientWithRoot = stub = null
 
     it 'returns the same path witout a root', ->
       clientWithoutRoot.fullPath('/somePath').should.equal '/somePath'
@@ -66,11 +64,38 @@ describe 'SimpleClient Class', ->
     it 'returns a path with root when a root is present', ->
       clientWithRoot.fullPath('/somePath').should.equal '/some/Root/somePath'
 
-    it 'returns 1 slash between root and path when path has no leading slash', ->
-      clientWithRoot.fullPath('somePath').should.equal '/some/Root/somePath'
-
     it 'return the exact path if no root and path is without leading slash', ->
       clientWithoutRoot.fullPath('somePath').should.equal 'somePath'
+
+
+  describe '#joinPath', ->
+    client = null
+
+    beforeEach ->
+      client = new SimpleClient()
+
+    afterEach ->
+      client = null
+      clientWithoutRoot = clientWithRoot = stub = null
+
+    it 'does not use the root path', ->
+      clientWithRoot = new SimpleClient root: '/some/Root'
+      clientWithRoot.joinPath('/somePath', 'here').should.equal '/somePath/here'
+
+    it 'returns 1 slash between base and extra when extra has no leading slash', ->
+      client.joinPath('base', 'extra').should.equal 'base/extra'
+
+    it 'accepts 1 argument', ->
+      client.joinPath('base').should.equal 'base'
+
+    it 'accepts an array as 1st argument', ->
+      client.joinPath(['base', 'path']).should.equal 'base/path'
+
+    it 'accepts an array as 2nd argument', ->
+      client.joinPath('base', ['extra', 'path']).should.equal 'base/extra/path'
+
+    it 'accepts an array as both arguments', ->
+      client.joinPath(['base', 'path'], ['to', 'here']).should.equal 'base/path/to/here'
 
 
   describe '#create', ->

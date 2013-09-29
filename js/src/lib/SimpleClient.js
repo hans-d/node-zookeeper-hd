@@ -1,10 +1,12 @@
 // This file has been generated from coffee source files
 
-var DummyLogger, SimpleClient, Zookeeper, normalizeCallBack, path;
+var DummyLogger, SimpleClient, Zookeeper, normalizeCallBack, path, _;
 
 Zookeeper = require('zookeeper');
 
 path = require('path');
+
+_ = require('underscore');
 
 normalizeCallBack = function(onData) {
   return function(resultCode, error, data1, data2) {
@@ -39,6 +41,13 @@ module.exports = SimpleClient = (function() {
   };
 
   SimpleClient.prototype.joinPath = function(base, extra) {
+    extra = extra || '';
+    if (_.isArray(base)) {
+      base = path.join.apply(this, base);
+    }
+    if (_.isArray(extra)) {
+      extra = path.join.apply(this, extra);
+    }
     return path.join(base, extra);
   };
 

@@ -112,7 +112,7 @@ module.exports = PlusClient = (function() {
         }
         childData = {};
         return async.each(children, function(child, asyncChildReady) {
-          return _this.get(_this.client.joinPath(zkPath, child), options, function(err, result) {
+          return _this.get(_this.joinPath(zkPath, child), options, function(err, stat, result) {
             if (err) {
               return asyncChildReady(err);
             }
@@ -126,6 +126,10 @@ module.exports = PlusClient = (function() {
     ], function(err, result) {
       return onData(err, result);
     });
+  };
+
+  PlusClient.prototype.joinPath = function(base, extra) {
+    return this.client.joinPath(base, extra);
   };
 
   PlusClient.prototype.mkdir = function(zkPath, options, onReady) {
