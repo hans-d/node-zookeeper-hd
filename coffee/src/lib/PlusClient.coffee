@@ -67,6 +67,7 @@ module.exports = class PlusClient
       watch: null
       createPathIfNotExists: false
       getChildData: false
+      levels: 1
 
     async.waterfall [
 
@@ -78,7 +79,22 @@ module.exports = class PlusClient
         @client.getChildren zkPath, options.watch, asyncReady
 
       (children, asyncReady) =>
-        return asyncReady null, children unless options.getChildData
+        return asyncReady null, children if options.levels == 1
+
+        nestedOptions = _.extend levels: options.levels - 1, _.omit options, 'levels'
+        childData = {}
+
+        async.each children, (child, asyncChildReady) =>
+          @getChildren @joinPath(zkPath, child), nestedOptions, (err, res) =>
+            return asyncChildReady err if err
+            childData[child] = res
+            asyncChildReady null
+        , (err) ->
+          asyncReady err, childData
+
+      (children, asyncReady) =>
+        return asyncReady null, children unless (options.getChildData && options.levels == 1)
+
         childData = {}
 
         async.each children, (child, asyncChildReady) =>

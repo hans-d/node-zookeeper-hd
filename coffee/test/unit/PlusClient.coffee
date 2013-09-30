@@ -248,6 +248,46 @@ describe 'PlusClient Class', ->
           mock.verify()
           done()
 
+      it 'can retrieve the child values of lower levels with getChildData', (done) ->
+        mockMethod.withArgs('/foo', null).yields null, ['foo', 'bar']
+        mock.expects('getChildren').once().withArgs('/foo/foo', null).yields null, ['foo1', 'foo2']
+        mock.expects('getChildren').once().withArgs('/foo/bar', null).yields null, ['bar1', 'bar2']
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns '/foo/foo'
+        mock.expects('joinPath').once().withArgs('/foo/foo', 'foo1').returns '/foo/foo/foo1'
+        mock.expects('joinPath').once().withArgs('/foo/foo', 'foo2').returns '/foo/foo/foo2'
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns '/foo/bar'
+        mock.expects('joinPath').once().withArgs('/foo/bar', 'bar1').returns '/foo/bar/bar1'
+        mock.expects('joinPath').once().withArgs('/foo/bar', 'bar2').returns '/foo/bar/bar2'
+
+        mock.expects('get').once().withArgs('/foo/foo/foo1').yields null, {}, "foo-result1"
+        mock.expects('get').once().withArgs('/foo/foo/foo2').yields null, {}, "foo-result2"
+        mock.expects('get').once().withArgs('/foo/bar/bar1').yields null, {}, "bar-result1"
+        mock.expects('get').once().withArgs('/foo/bar/bar2').yields null, {}, "bar-result2"
+
+        client.getChildren '/foo', getChildData: true, levels: 2, (err, res) ->
+          should.not.exist err
+          res.should.eql
+            foo: {foo1: "foo-result1", foo2: "foo-result2" },
+            bar: {bar1: "bar-result1", bar2: "bar-result2" }
+          mock.verify()
+          done()
+
+      it 'does not retrieve the child values of lower levels without getChildData', (done) ->
+        mockMethod.withArgs('/foo', null).yields null, ['foo', 'bar']
+        mock.expects('getChildren').once().withArgs('/foo/foo', null).yields null, ['foo1', 'foo2']
+        mock.expects('getChildren').once().withArgs('/foo/bar', null).yields null, ['bar1', 'bar2']
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns '/foo/foo'
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns '/foo/bar'
+
+        client.getChildren '/foo', levels: 2, (err, res) ->
+          should.not.exist err
+          res.should.eql
+            foo: [ 'foo1', 'foo2' ],
+            bar: [ 'bar1', 'bar2' ]
+          mock.verify()
+          done()
+
+
     describe '#mkdir', ->
 
       beforeEach ->
