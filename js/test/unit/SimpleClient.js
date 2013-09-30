@@ -99,8 +99,11 @@ describe('SimpleClient Class', function() {
     it('accepts an array as 2nd argument', function() {
       return client.joinPath('base', ['extra', 'path']).should.equal('base/extra/path');
     });
-    return it('accepts an array as both arguments', function() {
+    it('accepts an array as both arguments', function() {
       return client.joinPath(['base', 'path'], ['to', 'here']).should.equal('base/path/to/here');
+    });
+    return it('accepts nested arrays as arguments', function() {
+      return client.joinPath(['base', ['path']], [['too']]).should.equal('base/path/too');
     });
   });
   describe('#create', function() {

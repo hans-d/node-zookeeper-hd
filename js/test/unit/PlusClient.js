@@ -233,8 +233,26 @@ describe('PlusClient Class', function() {
           return done();
         });
       });
-      return it('can be called using plus signature without options', function(done) {
+      it('can be called using plus signature without options', function(done) {
         mockMethod.withArgs('/foo', null).yields(null);
+        return client.get('/foo', function(err) {
+          mock.verify();
+          return done();
+        });
+      });
+      it('can create the root path with createPathIfNotExists', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null);
+        mock.expects('mkdir').once().withArgs('/foo').yields(null);
+        return client.get('/foo', {
+          createPathIfNotExists: true
+        }, function(err) {
+          mock.verify();
+          return done();
+        });
+      });
+      return it('does not create the root path without createPathIfNotExists', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null);
+        mock.expects('mkdir').never();
         return client.get('/foo', function(err) {
           mock.verify();
           return done();
@@ -311,10 +329,61 @@ describe('PlusClient Class', function() {
           return done();
         });
       });
-      return it('does not retrieve the child values without getChildData', function(done) {
+      it('does not retrieve the child values without getChildData', function(done) {
         mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
         return client.getChildren('/foo', function(err, res) {
           res.should.eql(['foo', 'bar']);
+          mock.verify();
+          return done();
+        });
+      });
+      it('can retrieve the child values of lower levels with getChildData', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
+        mock.expects('getChildren').once().withArgs('/foo/foo', null).yields(null, ['foo1', 'foo2']);
+        mock.expects('getChildren').once().withArgs('/foo/bar', null).yields(null, ['bar1', 'bar2']);
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns('/foo/foo');
+        mock.expects('joinPath').once().withArgs('/foo/foo', 'foo1').returns('/foo/foo/foo1');
+        mock.expects('joinPath').once().withArgs('/foo/foo', 'foo2').returns('/foo/foo/foo2');
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns('/foo/bar');
+        mock.expects('joinPath').once().withArgs('/foo/bar', 'bar1').returns('/foo/bar/bar1');
+        mock.expects('joinPath').once().withArgs('/foo/bar', 'bar2').returns('/foo/bar/bar2');
+        mock.expects('get').once().withArgs('/foo/foo/foo1').yields(null, {}, "foo-result1");
+        mock.expects('get').once().withArgs('/foo/foo/foo2').yields(null, {}, "foo-result2");
+        mock.expects('get').once().withArgs('/foo/bar/bar1').yields(null, {}, "bar-result1");
+        mock.expects('get').once().withArgs('/foo/bar/bar2').yields(null, {}, "bar-result2");
+        return client.getChildren('/foo', {
+          getChildData: true,
+          levels: 2
+        }, function(err, res) {
+          should.not.exist(err);
+          res.should.eql({
+            foo: {
+              foo1: "foo-result1",
+              foo2: "foo-result2"
+            },
+            bar: {
+              bar1: "bar-result1",
+              bar2: "bar-result2"
+            }
+          });
+          mock.verify();
+          return done();
+        });
+      });
+      return it('does not retrieve the child values of lower levels without getChildData', function(done) {
+        mockMethod.withArgs('/foo', null).yields(null, ['foo', 'bar']);
+        mock.expects('getChildren').once().withArgs('/foo/foo', null).yields(null, ['foo1', 'foo2']);
+        mock.expects('getChildren').once().withArgs('/foo/bar', null).yields(null, ['bar1', 'bar2']);
+        mock.expects('joinPath').once().withArgs('/foo', 'foo').returns('/foo/foo');
+        mock.expects('joinPath').once().withArgs('/foo', 'bar').returns('/foo/bar');
+        return client.getChildren('/foo', {
+          levels: 2
+        }, function(err, res) {
+          should.not.exist(err);
+          res.should.eql({
+            foo: ['foo1', 'foo2'],
+            bar: ['bar1', 'bar2']
+          });
           mock.verify();
           return done();
         });

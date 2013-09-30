@@ -21,7 +21,8 @@ module.exports = class PlusClient
     if !_.isObject options
       @log.debug 'create: non object options, moving it to options.flags'
       options = flags: options
-    options = _.defaults options, flags: null
+    options = _.defaults options,
+      flags: null
 
     @client.create zkPath, value, options.flags, onReady
 
@@ -49,9 +50,23 @@ module.exports = class PlusClient
     if !_.isObject options
       @log.debug 'get: non object options, moving it to options.watch'
       options = watch: options
-    options = _.defaults options, watch: null
+    options = _.defaults options,
+      watch: null
+      createPathIfNotExists: false
 
-    @client.get zkPath, options.watch, onData
+    # TODO: return stat & data as one if callback signature has 2 arguments
+
+    async.waterfall [
+
+      (asyncReady) =>
+        return asyncReady() unless options.createPathIfNotExists
+        @createPathIfNotExists zkPath, options, asyncReady
+
+      (asyncReady) =>
+        @client.get zkPath, options.watch, asyncReady
+
+    ], (err, stat, data) ->
+        onData err, stat, data
 
 
   getChildren: (zkPath, options, onData) ->

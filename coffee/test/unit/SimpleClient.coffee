@@ -97,6 +97,8 @@ describe 'SimpleClient Class', ->
     it 'accepts an array as both arguments', ->
       client.joinPath(['base', 'path'], ['to', 'here']).should.equal 'base/path/to/here'
 
+    it 'accepts nested arrays as arguments', ->
+      client.joinPath(['base', ['path']], [['too']]).should.equal 'base/path/too'
 
   describe '#create', ->
 

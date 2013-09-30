@@ -28,8 +28,8 @@ module.exports = class SimpleClient
 
   joinPath: (base, extra) ->
     extra = extra || ''
-    base = path.join.apply @, base if _.isArray base
-    extra = path.join.apply @, extra if _.isArray extra
+    base = path.join.apply @, _.flatten base if _.isArray base
+    extra = path.join.apply @, _.flatten extra if _.isArray extra
     return path.join base, extra
 
   create: (zkPath, value, flags, onReady) ->

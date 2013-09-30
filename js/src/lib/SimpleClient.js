@@ -43,10 +43,10 @@ module.exports = SimpleClient = (function() {
   SimpleClient.prototype.joinPath = function(base, extra) {
     extra = extra || '';
     if (_.isArray(base)) {
-      base = path.join.apply(this, base);
+      base = path.join.apply(this, _.flatten(base));
     }
     if (_.isArray(extra)) {
-      extra = path.join.apply(this, extra);
+      extra = path.join.apply(this, _.flatten(extra));
     }
     return path.join(base, extra);
   };

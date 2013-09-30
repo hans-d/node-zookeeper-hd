@@ -62,6 +62,7 @@ module.exports = PlusClient = (function() {
   };
 
   PlusClient.prototype.get = function(zkPath, options, onData) {
+    var _this = this;
     if (!onData) {
       this.log.debug('get: no onData argument, inserting empty options');
       onData = options;
@@ -74,9 +75,21 @@ module.exports = PlusClient = (function() {
       };
     }
     options = _.defaults(options, {
-      watch: null
+      watch: null,
+      createPathIfNotExists: false
     });
-    return this.client.get(zkPath, options.watch, onData);
+    return async.waterfall([
+      function(asyncReady) {
+        if (!options.createPathIfNotExists) {
+          return asyncReady();
+        }
+        return _this.createPathIfNotExists(zkPath, options, asyncReady);
+      }, function(asyncReady) {
+        return _this.client.get(zkPath, options.watch, asyncReady);
+      }
+    ], function(err, stat, data) {
+      return onData(err, stat, data);
+    });
   };
 
   PlusClient.prototype.getChildren = function(zkPath, options, onData) {
@@ -95,7 +108,8 @@ module.exports = PlusClient = (function() {
     options = _.defaults(options, {
       watch: null,
       createPathIfNotExists: false,
-      getChildData: false
+      getChildData: false,
+      levels: 1
     });
     return async.waterfall([
       function(asyncReady) {
@@ -106,8 +120,28 @@ module.exports = PlusClient = (function() {
       }, function(asyncReady) {
         return _this.client.getChildren(zkPath, options.watch, asyncReady);
       }, function(children, asyncReady) {
+        var childData, nestedOptions;
+        if (options.levels === 1) {
+          return asyncReady(null, children);
+        }
+        nestedOptions = _.extend({
+          levels: options.levels - 1
+        }, _.omit(options, 'levels'));
+        childData = {};
+        return async.each(children, function(child, asyncChildReady) {
+          return _this.getChildren(_this.joinPath(zkPath, child), nestedOptions, function(err, res) {
+            if (err) {
+              return asyncChildReady(err);
+            }
+            childData[child] = res;
+            return asyncChildReady(null);
+          });
+        }, function(err) {
+          return asyncReady(err, childData);
+        });
+      }, function(children, asyncReady) {
         var childData;
-        if (!options.getChildData) {
+        if (!(options.getChildData && options.levels === 1)) {
           return asyncReady(null, children);
         }
         childData = {};

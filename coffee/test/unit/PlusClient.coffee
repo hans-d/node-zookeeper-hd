@@ -128,7 +128,6 @@ describe 'PlusClient Class', ->
           mock.verify()
           done()
 
-
     describe '#exists', ->
 
       beforeEach ->
@@ -182,6 +181,20 @@ describe 'PlusClient Class', ->
 
       it 'can be called using plus signature without options', (done) ->
         mockMethod.withArgs('/foo', null).yields null
+        client.get '/foo', (err) ->
+          mock.verify()
+          done()
+
+      it 'can create the root path with createPathIfNotExists', (done) ->
+        mockMethod.withArgs('/foo', null).yields null
+        mock.expects('mkdir').once().withArgs('/foo').yields null
+        client.get '/foo', createPathIfNotExists: true, (err) ->
+          mock.verify()
+          done()
+
+      it 'does not create the root path without createPathIfNotExists', (done) ->
+        mockMethod.withArgs('/foo', null).yields null
+        mock.expects('mkdir').never()
         client.get '/foo', (err) ->
           mock.verify()
           done()
