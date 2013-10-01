@@ -4,7 +4,7 @@ _ = require 'underscore'
 
 normalizeCallBack = (onData) ->
   return (resultCode, error, data1, data2) ->
-    return onData(error) if resultCode != 0
+    return onData(rc: resultCode, msg: error) if resultCode != 0
     onData null, data1, data2
 
 
@@ -41,7 +41,7 @@ module.exports = class SimpleClient
     @client.a_exists @fullPath(zkPath), watch, (resultCode, error, stat) ->
       return onData(null, true, stat) if resultCode == 0
       return onData(null, false) if error == 'no node'
-      onData error, false
+      onData msg: error, rc: resultCode, false
 
   get: (zkPath, watch, onData) ->
     @log.debug "get @ #{zkPath}"
@@ -54,7 +54,9 @@ module.exports = class SimpleClient
   mkdir: (zkPath, onReady) ->
     # NB: callback is different!
     @log.info "mkdir {#zkPath}"
-    @client.mkdirp @fullPath(zkPath), onReady
+    @client.mkdirp @fullPath(zkPath), (err) ->
+      return onReady msg: err, rc: null if err
+      onReady()
 
   set: (zkPath, value, version, onReady) ->
     @log.info "set #{value} (v #{version}) @ #{zkPath}"

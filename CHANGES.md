@@ -9,6 +9,8 @@ Uses semantic versioning
 - 0.2:
     - PlusClient
         - wraps SimpleClient instead of extending it, remains api compatible
+        - added get options:
+            - createPathIfNotExists (default: false)
         - added getChildren options:
             - createPathIfNotExists (default: false)
             - getChildData (default: false), only for the last level
@@ -16,6 +18,8 @@ Uses semantic versioning
         - renamed createPathIfNotExist to createPathIfNotExists (old method redirects)
     - SimpleClient
         - added joinPath (also exposed by PlusClient)
+        - error returned {rc, msg } instead of error msg alone
+          in case of mkdir rc is null (no code is provided by zookeeper)
 - 0.1:
     - published under zookeeper-hd, instead of node-zookeeper-hd
 - 0.0:
