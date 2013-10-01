@@ -11,7 +11,10 @@ _ = require('underscore');
 normalizeCallBack = function(onData) {
   return function(resultCode, error, data1, data2) {
     if (resultCode !== 0) {
-      return onData(error);
+      return onData({
+        rc: resultCode,
+        msg: error
+      });
     }
     return onData(null, data1, data2);
   };
@@ -65,7 +68,10 @@ module.exports = SimpleClient = (function() {
       if (error === 'no node') {
         return onData(null, false);
       }
-      return onData(error, false);
+      return onData({
+        msg: error,
+        rc: resultCode
+      }, false);
     });
   };
 
@@ -81,7 +87,15 @@ module.exports = SimpleClient = (function() {
 
   SimpleClient.prototype.mkdir = function(zkPath, onReady) {
     this.log.info("mkdir {#zkPath}");
-    return this.client.mkdirp(this.fullPath(zkPath), onReady);
+    return this.client.mkdirp(this.fullPath(zkPath), function(err) {
+      if (err) {
+        return onReady({
+          msg: err,
+          rc: null
+        });
+      }
+      return onReady();
+    });
   };
 
   SimpleClient.prototype.set = function(zkPath, value, version, onReady) {
