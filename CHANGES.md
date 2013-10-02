@@ -16,6 +16,7 @@ Uses semantic versioning
             - getChildData (default: false), only for the last level
             - levels (default: 1), to get childs of childs
         - renamed createPathIfNotExist to createPathIfNotExists (old method redirects)
+        - removed logging from library, included example how to enable logging using scarletjs
     - SimpleClient
         - added joinPath (also exposed by PlusClient)
         - error returned {rc, msg } instead of error msg alone
