@@ -1,6 +1,6 @@
 // This file has been generated from coffee source files
 
-var DummyLogger, PlusClient, SimpleClient, async, _;
+var PlusClient, SimpleClient, async, _;
 
 SimpleClient = require('./SimpleClient');
 
@@ -8,21 +8,9 @@ _ = require('underscore');
 
 async = require('async');
 
-DummyLogger = (function() {
-  function DummyLogger() {}
-
-  DummyLogger.prototype.info = function() {};
-
-  DummyLogger.prototype.debug = function() {};
-
-  return DummyLogger;
-
-})();
-
 module.exports = PlusClient = (function() {
   function PlusClient(options) {
     this.client = new SimpleClient(options);
-    this.log = options.logger || new DummyLogger();
   }
 
   PlusClient.prototype.connect = function(onReady) {
@@ -31,12 +19,10 @@ module.exports = PlusClient = (function() {
 
   PlusClient.prototype.create = function(zkPath, value, options, onReady) {
     if (!onReady) {
-      this.log.debug('create: no onReady argument, inserting empty options');
       onReady = options;
       options = {};
     }
     if (!_.isObject(options)) {
-      this.log.debug('create: non object options, moving it to options.flags');
       options = {
         flags: options
       };
@@ -49,12 +35,10 @@ module.exports = PlusClient = (function() {
 
   PlusClient.prototype.exists = function(zkPath, options, onData) {
     if (!onData) {
-      this.log.debug('exists: no onData argument, inserting empty options');
       onData = options;
       options = {};
     }
     if (!_.isObject(options)) {
-      this.log.debug('exists: non object options, moving it to options.watch');
       options = {
         watch: options
       };
@@ -68,12 +52,10 @@ module.exports = PlusClient = (function() {
   PlusClient.prototype.get = function(zkPath, options, onData) {
     var _this = this;
     if (!onData) {
-      this.log.debug('get: no onData argument, inserting empty options');
       onData = options;
       options = {};
     }
     if (!_.isObject(options)) {
-      this.log.debug('get: non object options, moving it to options.watch');
       options = {
         watch: options
       };
@@ -99,12 +81,10 @@ module.exports = PlusClient = (function() {
   PlusClient.prototype.getChildren = function(zkPath, options, onData) {
     var _this = this;
     if (!onData) {
-      this.log.debug('getChildren: no onData argument, inserting empty options');
       onData = options;
       options = {};
     }
     if (!_.isObject(options)) {
-      this.log.debug('getChildren: non object options, moving it to options.watch');
       options = {
         watch: options
       };
@@ -172,7 +152,6 @@ module.exports = PlusClient = (function() {
 
   PlusClient.prototype.mkdir = function(zkPath, options, onReady) {
     if (!onReady) {
-      this.log.debug('mkdir: no onReady argument, inserting empty options');
       onReady = options;
       options = {};
     }
@@ -181,7 +160,6 @@ module.exports = PlusClient = (function() {
 
   PlusClient.prototype.set = function(zkPath, value, version, options, onReady) {
     if (!onReady) {
-      this.log.debug('set: no onReady argument, inserting empty options');
       onReady = options;
       options = {};
     }
@@ -190,28 +168,23 @@ module.exports = PlusClient = (function() {
 
   PlusClient.prototype.createPathIfNotExists = function(zkPath, options, onReady) {
     if (!onReady) {
-      this.log.debug('createPathIfNotExist: no onReady argument, inserting empty options');
       onReady = options;
       options = {};
     }
-    this.log.info("createPathIfNotExists " + zkPath);
     return this.mkdir(zkPath, options, onReady);
   };
 
   PlusClient.prototype.createPathIfNotExist = function(zkPath, options, onReady) {
-    this.log.info('createPathIfNotExist deprecated - use createPathIfNotExists instead');
     return createPathIfNotExists(zkPath, options, onReady);
   };
 
   PlusClient.prototype.createOrUpdate = function(zkPath, value, options, onReady) {
     var _this = this;
     if (!onReady) {
-      this.log.debug('createOrUpdate: no onReady argument, inserting empty options');
       onReady = options;
       options = {};
     }
     if (!_.isObject(options)) {
-      this.log.debug('createOrUpdate: non object options, moving it to options.flags; onReady -> options.watch, onReady = arguments[4]');
       options = {
         flags: options,
         watch: onReady
@@ -222,7 +195,6 @@ module.exports = PlusClient = (function() {
       flags: null,
       watch: null
     });
-    this.log.info("#createOrUpdate " + value + " @ " + zkPath);
     return this.exists(zkPath, options, function(err, exists, stat) {
       if (err) {
         return onReady(err);
