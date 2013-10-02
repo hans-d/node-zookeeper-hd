@@ -12,6 +12,9 @@ module.exports = class PlusClient
     @client = new SimpleClient options
     @log = options.logger || new DummyLogger()
 
+  connect: (onReady) ->
+    @client.connect onReady
+
   create: (zkPath, value, options, onReady) ->
     if !onReady
       @log.debug 'create: no onReady argument, inserting empty options'

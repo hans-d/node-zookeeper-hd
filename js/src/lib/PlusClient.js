@@ -25,6 +25,10 @@ module.exports = PlusClient = (function() {
     this.log = options.logger || new DummyLogger();
   }
 
+  PlusClient.prototype.connect = function(onReady) {
+    return this.client.connect(onReady);
+  };
+
   PlusClient.prototype.create = function(zkPath, value, options, onReady) {
     if (!onReady) {
       this.log.debug('create: no onReady argument, inserting empty options');

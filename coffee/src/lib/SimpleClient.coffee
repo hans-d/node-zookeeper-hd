@@ -7,11 +7,6 @@ normalizeCallBack = (onData) ->
     return onData(rc: resultCode, msg: error) if resultCode != 0
     onData null, data1, data2
 
-
-class DummyLogger
-  info: ->
-  debug: ->
-
 # Used client: 'zookeeper' - https://github.com/yfinkelstein/node-zookeeper
 # Normalizes function names and callback signatures
 
@@ -20,8 +15,10 @@ module.exports = class SimpleClient
   constructor: (options) ->
     options = options || {}
     @client = new Zookeeper options
-    @log = options.logger || new DummyLogger()
     @root = options.root || ''
+
+  connect: (onReady) ->
+    @client.connect onReady
 
   fullPath: (relativePath) ->
     return @joinPath @root, relativePath
@@ -33,32 +30,26 @@ module.exports = class SimpleClient
     return path.join base, extra
 
   create: (zkPath, value, flags, onReady) ->
-    @log.info "create #{value} @ #{path}"
     @client.a_create @fullPath(zkPath), value, flags, normalizeCallBack onReady
 
   exists: (zkPath, watch, onData) ->
-    @log.debug "exists @ #{zkPath}"
     @client.a_exists @fullPath(zkPath), watch, (resultCode, error, stat) ->
       return onData(null, true, stat) if resultCode == 0
       return onData(null, false) if error == 'no node'
       onData msg: error, rc: resultCode, false
 
   get: (zkPath, watch, onData) ->
-    @log.debug "get @ #{zkPath}"
     @client.a_get @fullPath(zkPath), watch, normalizeCallBack onData
 
   getChildren: (zkPath, watch, onData) ->
-    @log.debug "getChildren @ #{zkPath}"
     @client.a_get_children @fullPath(zkPath), watch, normalizeCallBack onData
 
   mkdir: (zkPath, onReady) ->
     # NB: callback is different!
-    @log.info "mkdir {#zkPath}"
     @client.mkdirp @fullPath(zkPath), (err) ->
       return onReady msg: err, rc: null if err
       onReady()
 
   set: (zkPath, value, version, onReady) ->
-    @log.info "set #{value} (v #{version}) @ #{zkPath}"
     @client.a_set @fullPath(zkPath), value, version, normalizeCallBack onReady
 

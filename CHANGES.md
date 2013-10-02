@@ -4,7 +4,7 @@ Changes
 Overview of api changes, for details see the commit log.
 Uses semantic versioning
 
-0.x
+0.x - Unstable API
 ---
 - 0.2:
     - PlusClient
@@ -20,6 +20,9 @@ Uses semantic versioning
         - added joinPath (also exposed by PlusClient)
         - error returned {rc, msg } instead of error msg alone
           in case of mkdir rc is null (no code is provided by zookeeper)
+        - removed logging from library, included example how to enable logging using scarletjs
+        - forgot 'connect' (also now available in PlusClient)
+
 - 0.1:
     - published under zookeeper-hd, instead of node-zookeeper-hd
 - 0.0:

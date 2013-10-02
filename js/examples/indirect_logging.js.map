@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "indirect_logging.js",
+  "sourceRoot": "../../coffee/examples/",
+  "sources": [
+    "indirect_logging.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA,IAAA,iDAAA;;AAAA,CAAA,EAAU,IAAV,EAAU;;AACV,CADA,EACc,CAAA,GAAd,iBAAc;;AACd,CAFA,EAEgB,GAFhB,CAEuB,MAAvB;;AAEA,CAJA,EAIe,IAAA,KAAf,aAAe;;AAEf,CANA,EAMa,CAAA,EAAb,MAAa;CACX,CAAA,KAAA,SAAA;CAAA,CACC,CADD,IACC;CADD,CAEC,SAAA;CAFD,CAGC,GAHD,mBAGC;CAVH,CAMa;;AAQb,CAdA,EAce,GAAT,CAAN,EAAgB;CACd,CAAA,CAAA,IAAO,GAAM;CAAb,CACA,CAAA,CAAA,EAAM,EAAwB,CAAC,EAA/B;CACE,CAAwB,CAAxB,CAAA,GAAO,CAAP,EAAA;CADF,EAA8B;CAFjB"
+}
