@@ -1,5 +1,10 @@
 // This file has been generated from coffee source files
 
+/*
+  this is an example how to get logging on the simple client
+  using a library like scarletjs
+*/
+
 var Scarlet, SimpleClient, client, scarlet, scarletLogger;
 
 Scarlet = require('scarlet');
@@ -11,11 +16,10 @@ scarletLogger = scarlet.plugins.logger;
 SimpleClient = require('../src/lib/SimpleClient');
 
 client = new SimpleClient({
-  connect: "localhost:2181",
-  timeout: 200,
-  debug_level: 2,
-  host_order_deterministic: false
+  connect: "localhost:2181"
 });
+
+scarletLogger.bindTo(client);
 
 client.connect(function(err) {
   console.log("error?: " + err);

@@ -1,16 +1,17 @@
+###
+  this is an example how to get logging on the simple client
+  using a library like scarletjs
+###
+
 Scarlet = require 'scarlet'
 scarlet = new Scarlet 'scarlet-contrib-logger'
 scarletLogger = scarlet.plugins.logger
 
 SimpleClient = require '../src/lib/SimpleClient'
 
-client = new SimpleClient
-  connect: "localhost:2181"
-  ,timeout: 200
-  ,debug_level: 2
-  ,host_order_deterministic: false
+client = new SimpleClient connect: "localhost:2181"
 
-#scarletLogger.bindTo client
+scarletLogger.bindTo client
 
 client.connect (err) ->
   console.log "error?: #{err}"
