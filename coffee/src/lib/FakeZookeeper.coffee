@@ -116,6 +116,9 @@ module.exports = class FakeZookeeper extends events.EventEmitter
   close: ->
     # throw 'not implemented'
 
+  connect: (cb) ->
+    cb()
+
   _stat: ( node ) ->
 #    o->Set(String::NewSymbol("czxid"), Number::New (stat->czxid), ReadOnly);
 #    o->Set(String::NewSymbol("mzxid"), Number::New (stat->mzxid), ReadOnly);

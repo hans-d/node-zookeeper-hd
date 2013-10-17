@@ -139,6 +139,10 @@ module.exports = FakeZookeeper = (function(_super) {
 
   FakeZookeeper.prototype.close = function() {};
 
+  FakeZookeeper.prototype.connect = function(cb) {
+    return cb();
+  };
+
   FakeZookeeper.prototype._stat = function(node) {
     return {
       version: node.version
