@@ -56,6 +56,9 @@ FakeZookeeper
 Provides a fake zookeeper, with methods of the zookeeper client and backed with a memory based registry.
  Watches are not implemented yet.
 
+See [coffeescript | js]/test/integration/FakePlusClient for an example where only the original zookeeper
+ module is changed (using mockery), and the PlusClient is used to perform zookeeper actions
+
 Various
 -------
 
