@@ -16,6 +16,9 @@ normalizeCallBack = function(onData) {
         msg: error
       });
     }
+    if (arguments.length <= 3) {
+      return onData(null, data1);
+    }
     return onData(null, data1, data2);
   };
 };

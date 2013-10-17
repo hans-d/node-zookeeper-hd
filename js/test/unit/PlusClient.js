@@ -18,7 +18,7 @@ describe('PlusClient Class', function() {
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerAllowables(['../../src/lib/PlusClient', 'async', 'underscore']);
+    mockery.registerAllowables(['../../src/lib/PlusClient', 'async', 'underscore', 'path']);
     mockery.registerMock('./SimpleClient', SimpleClientStub);
     return PlusClient = require('../../src/lib/PlusClient');
   });

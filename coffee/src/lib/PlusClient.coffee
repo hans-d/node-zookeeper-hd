@@ -1,6 +1,7 @@
 SimpleClient = require './SimpleClient'
 _ = require 'underscore'
 async = require 'async'
+path = require 'path'
 
 module.exports = class PlusClient
 
@@ -19,8 +20,19 @@ module.exports = class PlusClient
       options = flags: options
     options = _.defaults options,
       flags: null
+      createPathIfNotExists: false
 
-    @client.create zkPath, value, options.flags, onReady
+    async.waterfall [
+
+      (asyncReady) =>
+        return asyncReady() unless options.createPathIfNotExists
+        @createPathIfNotExists path.dirname(zkPath), options, asyncReady
+
+      (asyncReady) =>
+        @client.create zkPath, value, options.flags, asyncReady
+
+    ], (err, path) ->
+        onReady err, path
 
 
   exists: (zkPath, options, onData) ->
@@ -131,7 +143,21 @@ module.exports = class PlusClient
       onReady = options
       options = {}
 
-    @client.set zkPath, value, version, onReady
+    options = _.defaults options,
+      createPathIfNotExists: false
+
+    async.waterfall [
+
+      (asyncReady) =>
+        return asyncReady() unless options.createPathIfNotExists
+        @createPathIfNotExists zkPath, options, asyncReady
+
+      (asyncReady) =>
+        @client.set zkPath, value, version, asyncReady
+
+    ], (err, stat) ->
+      onReady err, stat
+
 
   createPathIfNotExists: (zkPath, options, onReady) ->
     if !onReady

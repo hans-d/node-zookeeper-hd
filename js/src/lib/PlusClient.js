@@ -1,12 +1,14 @@
 // This file has been generated from coffee source files
 
-var PlusClient, SimpleClient, async, _;
+var PlusClient, SimpleClient, async, path, _;
 
 SimpleClient = require('./SimpleClient');
 
 _ = require('underscore');
 
 async = require('async');
+
+path = require('path');
 
 module.exports = PlusClient = (function() {
   function PlusClient(options) {
@@ -18,6 +20,7 @@ module.exports = PlusClient = (function() {
   };
 
   PlusClient.prototype.create = function(zkPath, value, options, onReady) {
+    var _this = this;
     if (!onReady) {
       onReady = options;
       options = {};
@@ -28,9 +31,21 @@ module.exports = PlusClient = (function() {
       };
     }
     options = _.defaults(options, {
-      flags: null
+      flags: null,
+      createPathIfNotExists: false
     });
-    return this.client.create(zkPath, value, options.flags, onReady);
+    return async.waterfall([
+      function(asyncReady) {
+        if (!options.createPathIfNotExists) {
+          return asyncReady();
+        }
+        return _this.createPathIfNotExists(path.dirname(zkPath), options, asyncReady);
+      }, function(asyncReady) {
+        return _this.client.create(zkPath, value, options.flags, asyncReady);
+      }
+    ], function(err, path) {
+      return onReady(err, path);
+    });
   };
 
   PlusClient.prototype.exists = function(zkPath, options, onData) {
@@ -159,11 +174,26 @@ module.exports = PlusClient = (function() {
   };
 
   PlusClient.prototype.set = function(zkPath, value, version, options, onReady) {
+    var _this = this;
     if (!onReady) {
       onReady = options;
       options = {};
     }
-    return this.client.set(zkPath, value, version, onReady);
+    options = _.defaults(options, {
+      createPathIfNotExists: false
+    });
+    return async.waterfall([
+      function(asyncReady) {
+        if (!options.createPathIfNotExists) {
+          return asyncReady();
+        }
+        return _this.createPathIfNotExists(zkPath, options, asyncReady);
+      }, function(asyncReady) {
+        return _this.client.set(zkPath, value, version, asyncReady);
+      }
+    ], function(err, stat) {
+      return onReady(err, stat);
+    });
   };
 
   PlusClient.prototype.createPathIfNotExists = function(zkPath, options, onReady) {

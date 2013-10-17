@@ -11,7 +11,7 @@ describe 'PlusClient Class', ->
   before ->
     # control require-d modules
     mockery.enable useCleanCache: true
-    mockery.registerAllowables ['../../src/lib/PlusClient', 'async', 'underscore' ]
+    mockery.registerAllowables ['../../src/lib/PlusClient', 'async', 'underscore', 'path' ]
 
     # replace modules for testing
     mockery.registerMock './SimpleClient', SimpleClientStub

@@ -5,6 +5,7 @@ _ = require 'underscore'
 normalizeCallBack = (onData) ->
   return (resultCode, error, data1, data2) ->
     return onData(rc: resultCode, msg: error) if resultCode != 0
+    return onData null, data1 if arguments.length <= 3
     onData null, data1, data2
 
 # Used client: 'zookeeper' - https://github.com/yfinkelstein/node-zookeeper
