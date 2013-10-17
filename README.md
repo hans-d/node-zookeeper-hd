@@ -11,12 +11,14 @@ API
 ### SimpleClient
 
 Quick overview:
+
 - normalize function names ( get vs a_get )
 - normalize callback signatures to common nodejs callback structures (error, results)
 - exists returns true/false via callback (error, exists, stats)
 - except for noted above, tries to follow the underlying zookeeper client signature
 
 Methods
+
 - create (zkPath, value, flags, onReady)
 - exists: (zkPath, watch, onData)
 - get: (zkPath, watch, onData)
@@ -28,17 +30,20 @@ Methods
 ### PlusClient
 
 Quick overview
+
 - wraps SimpleClients
 - added: createOrUpdate
 - added: createPathIfNotExist
 - redefines the signatures of the SimpleClient methods, using an optional options argument
 
 Added methods:
+
 - createOrUpdate: (zkPath, value, options, onReady, extraArg)
     Options: { flags, watch }
 - createPathIfNotExist: (zkPath, options, onReady)
 
 Redefined methods from SimpleClient
+
 - create: (zkPath, value, options, onReady)
 - exists: (zkPath, options, onData)
 - get: (zkPath, options, onData)
@@ -46,7 +51,10 @@ Redefined methods from SimpleClient
 - mkdir: (zkPath, options, onReady)
 - set: (zkPath, value, version, options, onReady)
 
-
+FakeZookeeper
+-------------
+Provides a fake zookeeper, with methods of the zookeeper client and backed with a memory based registry.
+ Watches are not implemented yet.
 
 Various
 -------

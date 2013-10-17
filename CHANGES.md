@@ -6,6 +6,10 @@ Uses semantic versioning
 
 0.x - Unstable API
 ---
+
+- 0.3:
+    - FakeZookeper added
+
 - 0.2:
     - PlusClient
         - wraps SimpleClient instead of extending it, remains api compatible
@@ -17,6 +21,7 @@ Uses semantic versioning
             - levels (default: 1), to get childs of childs
         - renamed createPathIfNotExist to createPathIfNotExists (old method redirects)
         - removed logging from library, included example how to enable logging using scarletjs
+
     - SimpleClient
         - added joinPath (also exposed by PlusClient)
         - error returned {rc, msg } instead of error msg alone
@@ -26,5 +31,6 @@ Uses semantic versioning
 
 - 0.1:
     - published under zookeeper-hd, instead of node-zookeeper-hd
+
 - 0.0:
     - first published as node-zookeeper-hd

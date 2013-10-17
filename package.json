@@ -45,6 +45,7 @@
     "load-grunt-tasks": "~0.1.0",
     "glob": "~3.2.6",
     "scarlet": "~0.5.11",
-    "scarlet-contrib-logger": "~0.1.2"
+    "scarlet-contrib-logger": "~0.1.2",
+    "grunt-contrib-watch": "~0.5.3"
   }
 }
