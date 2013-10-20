@@ -34,13 +34,13 @@ describe('SimpleClient Class', function() {
       var client;
       client = new SimpleClient();
       client.should.exist;
-      return client.root.should.equal('');
+      return client.root.should.equal('/');
     });
     it('has a zookeeper client', function() {
       var client;
       client = new SimpleClient();
       client.client.should.be["instanceof"](zookeeperStub.Client);
-      return client.root.should.equal('');
+      return client.root.should.equal('/');
     });
     return it('can have a root', function() {
       var client;
@@ -67,8 +67,8 @@ describe('SimpleClient Class', function() {
     it('returns a path with root when a root is present', function() {
       return clientWithRoot.fullPath('/somePath').should.equal('/some/Root/somePath');
     });
-    return it('return the exact path if no root and path is without leading slash', function() {
-      return clientWithoutRoot.fullPath('somePath').should.equal('somePath');
+    return it('return the absolute path if no root given and path is without leading slash', function() {
+      return clientWithoutRoot.fullPath('somePath').should.equal('/somePath');
     });
   });
   describe('#joinPath', function() {
@@ -102,8 +102,11 @@ describe('SimpleClient Class', function() {
     it('accepts an array as both arguments', function() {
       return client.joinPath(['base', 'path'], ['to', 'here']).should.equal('base/path/to/here');
     });
-    return it('accepts nested arrays as arguments', function() {
+    it('accepts nested arrays as arguments', function() {
       return client.joinPath(['base', ['path']], [['too']]).should.equal('base/path/too');
+    });
+    return it('accepts an array as 2nd argument with first empty', function() {
+      return client.joinPath('', ['extra', 'path']).should.equal('extra/path');
     });
   });
   describe('#create', function() {

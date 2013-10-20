@@ -1,10 +1,8 @@
 // This file has been generated from coffee source files
 
-var SimpleClient, Zookeeper, normalizeCallBack, path, _;
+var SimpleClient, Zookeeper, normalizeCallBack, _;
 
 Zookeeper = require('zookeeper');
-
-path = require('path');
 
 _ = require('underscore');
 
@@ -27,7 +25,7 @@ module.exports = SimpleClient = (function() {
   function SimpleClient(options) {
     options = options || {};
     this.client = new Zookeeper(options);
-    this.root = options.root || '';
+    this.root = options.root || '/';
   }
 
   SimpleClient.prototype.connect = function(onReady) {
@@ -39,14 +37,15 @@ module.exports = SimpleClient = (function() {
   };
 
   SimpleClient.prototype.joinPath = function(base, extra) {
-    extra = extra || '';
-    if (_.isArray(base)) {
-      base = path.join.apply(this, _.flatten(base));
+    var all;
+    all = [];
+    if (base) {
+      all.push(base);
     }
-    if (_.isArray(extra)) {
-      extra = path.join.apply(this, _.flatten(extra));
+    if (extra) {
+      all.push(extra);
     }
-    return path.join(base, extra);
+    return (_.flatten(all)).join('/').replace('///', '/').replace('//', '/');
   };
 
   SimpleClient.prototype.create = function(zkPath, value, flags, onReady) {

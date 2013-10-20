@@ -1,5 +1,4 @@
 Zookeeper = require 'zookeeper'
-path = require 'path'
 _ = require 'underscore'
 
 normalizeCallBack = (onData) ->
@@ -16,7 +15,7 @@ module.exports = class SimpleClient
   constructor: (options) ->
     options = options || {}
     @client = new Zookeeper options
-    @root = options.root || ''
+    @root = options.root || '/'
 
   connect: (onReady) ->
     @client.connect onReady
@@ -25,10 +24,10 @@ module.exports = class SimpleClient
     return @joinPath @root, relativePath
 
   joinPath: (base, extra) ->
-    extra = extra || ''
-    base = path.join.apply @, _.flatten base if _.isArray base
-    extra = path.join.apply @, _.flatten extra if _.isArray extra
-    return path.join base, extra
+    all = []
+    all.push base if base
+    all.push extra if extra
+    return (_.flatten all).join('/').replace('///', '/').replace '//', '/'
 
   create: (zkPath, value, flags, onReady) ->
     @client.a_create @fullPath(zkPath), value, flags, normalizeCallBack onReady

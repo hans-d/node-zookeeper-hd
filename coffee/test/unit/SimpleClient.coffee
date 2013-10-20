@@ -36,12 +36,12 @@ describe 'SimpleClient Class', ->
     it 'can be created', ->
       client = new SimpleClient()
       client.should.exist
-      client.root.should.equal ''
+      client.root.should.equal '/'
 
     it 'has a zookeeper client', ->
       client = new SimpleClient()
       client.client.should.be.instanceof zookeeperStub.Client # replaced version
-      client.root.should.equal ''
+      client.root.should.equal '/'
 
     it 'can have a root', ->
       client = new SimpleClient root: '/some/Root'
@@ -64,8 +64,8 @@ describe 'SimpleClient Class', ->
     it 'returns a path with root when a root is present', ->
       clientWithRoot.fullPath('/somePath').should.equal '/some/Root/somePath'
 
-    it 'return the exact path if no root and path is without leading slash', ->
-      clientWithoutRoot.fullPath('somePath').should.equal 'somePath'
+    it 'return the absolute path if no root given and path is without leading slash', ->
+      clientWithoutRoot.fullPath('somePath').should.equal '/somePath'
 
 
   describe '#joinPath', ->
@@ -99,6 +99,10 @@ describe 'SimpleClient Class', ->
 
     it 'accepts nested arrays as arguments', ->
       client.joinPath(['base', ['path']], [['too']]).should.equal 'base/path/too'
+
+    it 'accepts an array as 2nd argument with first empty', ->
+      client.joinPath('', ['extra', 'path']).should.equal 'extra/path'
+
 
   describe '#create', ->
 
