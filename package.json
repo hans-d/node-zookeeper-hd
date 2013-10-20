@@ -1,6 +1,6 @@
 {
   "name": "zookeeper-hd",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Higher level (normalized) zookeeper client",
   "author": "Hans Donner",
   "license": "MIT",
