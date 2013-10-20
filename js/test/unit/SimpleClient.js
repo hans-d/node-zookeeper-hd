@@ -143,7 +143,9 @@ describe('SimpleClient Class', function() {
       return clientWithoutRoot.create('/foo', 'bar', 1, function(err, res) {
         err.should.eql({
           msg: 'foo-error',
-          rc: 99
+          rc: 99,
+          path: '/foo',
+          action: 'create'
         });
         stub.calledOnce.should.equal(true);
         return done();
@@ -184,8 +186,10 @@ describe('SimpleClient Class', function() {
       stub.yields(99, 'foo-error', 'foo-result');
       return clientWithoutRoot.exists('/foo', 1, function(err, exists, res) {
         err.should.eql({
+          msg: 'foo-error',
           rc: 99,
-          msg: 'foo-error'
+          path: '/foo',
+          action: 'exists'
         });
         exists.should.equal(false);
         stub.calledOnce.should.equal(true);
@@ -236,8 +240,10 @@ describe('SimpleClient Class', function() {
       stub.yields(99, 'foo-error', {}, 'foo-result');
       return clientWithoutRoot.get('/foo', 1, function(err, stat, res) {
         err.should.eql({
+          msg: 'foo-error',
           rc: 99,
-          msg: 'foo-error'
+          path: '/foo',
+          action: 'get'
         });
         stub.calledOnce.should.equal(true);
         return done();
@@ -277,8 +283,10 @@ describe('SimpleClient Class', function() {
       stub.yields(99, 'foo-error', 'foo-result');
       return clientWithoutRoot.getChildren('/foo', 1, function(err, res) {
         err.should.eql({
+          msg: 'foo-error',
           rc: 99,
-          msg: 'foo-error'
+          path: '/foo',
+          action: 'getChildren'
         });
         stub.calledOnce.should.equal(true);
         return done();
@@ -317,8 +325,10 @@ describe('SimpleClient Class', function() {
       stub.yields('foo-error');
       return clientWithoutRoot.mkdir('/foo', function(err) {
         err.should.eql({
+          msg: 'foo-error',
           rc: null,
-          msg: 'foo-error'
+          path: '/foo',
+          action: 'mkdir'
         });
         stub.calledOnce.should.equal(true);
         return done();
@@ -359,7 +369,9 @@ describe('SimpleClient Class', function() {
       return clientWithoutRoot.set('/foo', 'bar', 1, function(err, res) {
         err.should.eql({
           msg: 'foo-error',
-          rc: 99
+          rc: 99,
+          path: '/foo',
+          action: 'set'
         });
         stub.calledOnce.should.equal(true);
         return done();

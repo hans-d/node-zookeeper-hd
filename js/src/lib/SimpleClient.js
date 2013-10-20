@@ -6,12 +6,14 @@ Zookeeper = require('zookeeper');
 
 _ = require('underscore');
 
-normalizeCallBack = function(onData) {
+normalizeCallBack = function(action, path, onData) {
   return function(resultCode, error, data1, data2) {
     if (resultCode !== 0) {
       return onData({
         rc: resultCode,
-        msg: error
+        msg: error,
+        path: path,
+        action: action
       });
     }
     if (arguments.length <= 3) {
@@ -49,7 +51,7 @@ module.exports = SimpleClient = (function() {
   };
 
   SimpleClient.prototype.create = function(zkPath, value, flags, onReady) {
-    return this.client.a_create(this.fullPath(zkPath), value, flags, normalizeCallBack(onReady));
+    return this.client.a_create(this.fullPath(zkPath), value, flags, normalizeCallBack('create', zkPath, onReady));
   };
 
   SimpleClient.prototype.exists = function(zkPath, watch, onData) {
@@ -62,17 +64,19 @@ module.exports = SimpleClient = (function() {
       }
       return onData({
         msg: error,
-        rc: resultCode
+        rc: resultCode,
+        action: 'exists',
+        path: zkPath
       }, false);
     });
   };
 
   SimpleClient.prototype.get = function(zkPath, watch, onData) {
-    return this.client.a_get(this.fullPath(zkPath), watch, normalizeCallBack(onData));
+    return this.client.a_get(this.fullPath(zkPath), watch, normalizeCallBack('get', zkPath, onData));
   };
 
   SimpleClient.prototype.getChildren = function(zkPath, watch, onData) {
-    return this.client.a_get_children(this.fullPath(zkPath), watch, normalizeCallBack(onData));
+    return this.client.a_get_children(this.fullPath(zkPath), watch, normalizeCallBack('getChildren', zkPath, onData));
   };
 
   SimpleClient.prototype.mkdir = function(zkPath, onReady) {
@@ -80,7 +84,9 @@ module.exports = SimpleClient = (function() {
       if (err) {
         return onReady({
           msg: err,
-          rc: null
+          rc: null,
+          action: 'mkdir',
+          path: zkPath
         });
       }
       return onReady();
@@ -88,7 +94,7 @@ module.exports = SimpleClient = (function() {
   };
 
   SimpleClient.prototype.set = function(zkPath, value, version, onReady) {
-    return this.client.a_set(this.fullPath(zkPath), value, version, normalizeCallBack(onReady));
+    return this.client.a_set(this.fullPath(zkPath), value, version, normalizeCallBack('set', zkPath, onReady));
   };
 
   return SimpleClient;

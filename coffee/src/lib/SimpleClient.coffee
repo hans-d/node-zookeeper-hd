@@ -1,9 +1,9 @@
 Zookeeper = require 'zookeeper'
 _ = require 'underscore'
 
-normalizeCallBack = (onData) ->
+normalizeCallBack = (action, path, onData) ->
   return (resultCode, error, data1, data2) ->
-    return onData(rc: resultCode, msg: error) if resultCode != 0
+    return onData rc: resultCode, msg: error, path: path, action: action if resultCode != 0
     return onData null, data1 if arguments.length <= 3
     onData null, data1, data2
 
@@ -30,26 +30,26 @@ module.exports = class SimpleClient
     return (_.flatten all).join('/').replace('///', '/').replace '//', '/'
 
   create: (zkPath, value, flags, onReady) ->
-    @client.a_create @fullPath(zkPath), value, flags, normalizeCallBack onReady
+    @client.a_create @fullPath(zkPath), value, flags, normalizeCallBack 'create', zkPath, onReady
 
   exists: (zkPath, watch, onData) ->
     @client.a_exists @fullPath(zkPath), watch, (resultCode, error, stat) ->
-      return onData(null, true, stat) if resultCode == 0
-      return onData(null, false) if error == 'no node'
-      onData msg: error, rc: resultCode, false
+      return onData null, true, stat if resultCode == 0
+      return onData null, false  if error == 'no node'
+      onData msg: error, rc: resultCode, action: 'exists', path: zkPath, false
 
   get: (zkPath, watch, onData) ->
-    @client.a_get @fullPath(zkPath), watch, normalizeCallBack onData
+    @client.a_get @fullPath(zkPath), watch, normalizeCallBack 'get', zkPath, onData
 
   getChildren: (zkPath, watch, onData) ->
-    @client.a_get_children @fullPath(zkPath), watch, normalizeCallBack onData
+    @client.a_get_children @fullPath(zkPath), watch, normalizeCallBack 'getChildren', zkPath, onData
 
   mkdir: (zkPath, onReady) ->
     # NB: callback is different!
     @client.mkdirp @fullPath(zkPath), (err) ->
-      return onReady msg: err, rc: null if err
+      return onReady msg: err, rc: null, action: 'mkdir', path: zkPath if err
       onReady()
 
   set: (zkPath, value, version, onReady) ->
-    @client.a_set @fullPath(zkPath), value, version, normalizeCallBack onReady
+    @client.a_set @fullPath(zkPath), value, version, normalizeCallBack 'set', zkPath, onReady
 

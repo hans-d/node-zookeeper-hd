@@ -132,7 +132,11 @@ describe 'SimpleClient Class', ->
     it 'gives normalized error callback on error', (done) ->
       stub.yields 99, 'foo-error', 'foo-result'
       clientWithoutRoot.create '/foo', 'bar', 1, (err, res) ->
-        err.should.eql msg: 'foo-error', rc : 99
+        err.should.eql
+          msg: 'foo-error'
+          rc: 99
+          path: '/foo'
+          action: 'create'
         stub.calledOnce.should.equal true
         done()
 
@@ -166,7 +170,11 @@ describe 'SimpleClient Class', ->
     it 'gives normalized error callback on error', (done) ->
       stub.yields 99, 'foo-error', 'foo-result'
       clientWithoutRoot.exists '/foo', 1, (err, exists, res) ->
-        err.should.eql rc: 99, msg: 'foo-error'
+        err.should.eql
+          msg: 'foo-error'
+          rc: 99
+          path: '/foo'
+          action: 'exists'
         exists.should.equal false
         stub.calledOnce.should.equal true
         done()
@@ -208,8 +216,13 @@ describe 'SimpleClient Class', ->
 
     it 'gives normalized error callback on error', (done) ->
       stub.yields 99, 'foo-error', {}, 'foo-result'
+
       clientWithoutRoot.get '/foo', 1, (err, stat, res) ->
-        err.should.eql rc: 99, msg: 'foo-error'
+        err.should.eql
+          msg: 'foo-error'
+          rc: 99
+          path: '/foo'
+          action: 'get'
         stub.calledOnce.should.equal true
         done()
 
@@ -241,8 +254,13 @@ describe 'SimpleClient Class', ->
 
     it 'gives normalized error callback on error', (done) ->
       stub.yields 99, 'foo-error', 'foo-result'
+
       clientWithoutRoot.getChildren '/foo', 1, (err, res) ->
-        err.should.eql rc: 99, msg: 'foo-error'
+        err.should.eql
+          msg: 'foo-error'
+          rc: 99
+          path: '/foo'
+          action: 'getChildren'
         stub.calledOnce.should.equal true
         done()
 
@@ -273,8 +291,13 @@ describe 'SimpleClient Class', ->
 
     it 'gives normalized error callback on error', (done) ->
       stub.yields 'foo-error'
+
       clientWithoutRoot.mkdir '/foo', (err) ->
-        err.should.eql rc: null, msg: 'foo-error'
+        err.should.eql
+          msg: 'foo-error'
+          rc: null
+          path: '/foo'
+          action: 'mkdir'
         stub.calledOnce.should.equal true
         done()
 
@@ -298,15 +321,23 @@ describe 'SimpleClient Class', ->
 
     it 'gives normalized result callback on ok', (done) ->
       stub.yields 0, 'foo-error', 'foo-result'
+
       clientWithoutRoot.set '/foo', 'bar', 1, (err, res) ->
         should.not.exist err
         res.should.equal 'foo-result'
         stub.calledOnce.should.equal true
         done()
 
+
     it 'gives normalized error callback on error', (done) ->
+
       stub.yields 99, 'foo-error', 'foo-result'
+
       clientWithoutRoot.set '/foo', 'bar', 1, (err, res) ->
-        err.should.eql msg: 'foo-error', rc: 99
+        err.should.eql
+          msg: 'foo-error'
+          rc: 99
+          path: '/foo'
+          action: 'set'
         stub.calledOnce.should.equal true
         done()
