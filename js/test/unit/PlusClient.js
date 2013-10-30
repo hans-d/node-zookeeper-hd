@@ -15,12 +15,13 @@ describe('PlusClient Class', function() {
   PlusClient = null;
   client = mock = stub = null;
   before(function() {
+    var _ref;
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerAllowables(['../../src/lib/PlusClient', 'async', 'underscore', 'path']);
-    mockery.registerMock('./SimpleClient', SimpleClientStub);
-    return PlusClient = require('../../src/lib/PlusClient');
+    mockery.registerMock('./lib/SimpleClient', SimpleClientStub);
+    mockery.registerAllowables(['async', 'underscore', 'path', 'events', '..', '../../src/', './lib/PlusClient', './lib/FakeZookeeper']);
+    return _ref = require('../../src/'), PlusClient = _ref.PlusClient, _ref;
   });
   after(function() {
     mockery.deregisterAll();
@@ -76,32 +77,11 @@ describe('PlusClient Class', function() {
         return done();
       });
     });
-    it('can be called without options', function(done) {
+    return it('can be called without options', function(done) {
       client.exists = client._exists;
-      mock.expects('exists').once().withArgs('/foo', {
-        flags: null,
-        watch: null
-      }).yields(null, false);
-      mock.expects('create').once().withArgs('/foo', 'bar', {
-        flags: null,
-        watch: null
-      }).yields(null, 'foobar');
+      mock.expects('exists').once().withArgs('/foo').yields(null, false);
+      mock.expects('create').once().withArgs('/foo', 'bar').yields(null, 'foobar');
       return client.createOrUpdate('/foo', 'bar', function(err, res) {
-        mock.verify();
-        return done();
-      });
-    });
-    return it('can be called with backwards compatible signature', function(done) {
-      client.exists = client._exists;
-      mock.expects('exists').once().withArgs('/foo', {
-        flags: 1,
-        watch: 2
-      }).yields(null, false);
-      mock.expects('create').once().withArgs('/foo', 'bar', {
-        flags: 1,
-        watch: 2
-      }).yields(null, 'foobar');
-      return client.createOrUpdate('/foo', 'bar', 1, 2, function(err, res) {
         mock.verify();
         return done();
       });

@@ -10,16 +10,17 @@ describe 'PlusClient with a FakeZookeeper', ->
     # control require-d modules
     mockery.enable useCleanCache: true
     mockery.registerAllowables [
-      '../../src/lib/PlusClient',
-      './SimpleClient',
+      #'..', #'./lib/PlusClient',
+      #'./SimpleClient',
       'path', 'events',
       'async', 'underscore'
     ]
 
     # replace modules for testing
     mockery.registerSubstitute 'zookeeper', '../../src/lib/FakeZookeeper'
-    #    load module under test, using replaced require-d modules
-    PlusClient = require '../../src/lib/PlusClient'
+
+    #  load module under test, using replaced require-d modules
+    {PlusClient} = require '../../src/'
 
   after ->
     mockery.deregisterAll()

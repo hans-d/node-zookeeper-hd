@@ -6,6 +6,9 @@ Uses semantic versioning
 
 0.x - Unstable API
 ---
+- 0.4:
+    - Added documentation in source
+    - Removed deprecated methods/signature
 
 - 0.3:
     - FakeZookeper added

@@ -11,12 +11,18 @@ describe 'PlusClient Class', ->
   before ->
     # control require-d modules
     mockery.enable useCleanCache: true
-    mockery.registerAllowables ['../../src/lib/PlusClient', 'async', 'underscore', 'path' ]
 
     # replace modules for testing
-    mockery.registerMock './SimpleClient', SimpleClientStub
-#    load module under test, using replaced require-d modules
-    PlusClient = require '../../src/lib/PlusClient'
+    mockery.registerMock './lib/SimpleClient', SimpleClientStub
+
+    # allowed modules
+    mockery.registerAllowables [
+      'async', 'underscore', 'path', 'events',
+      '..', '../../src/', './lib/PlusClient', './lib/FakeZookeeper'
+    ]
+
+    # load module under test, using replaced require-d modules
+    {PlusClient} = require '../../src/'
 
   after ->
     mockery.deregisterAll()
@@ -60,17 +66,9 @@ describe 'PlusClient Class', ->
 
     it 'can be called without options', (done) ->
       client.exists = client._exists
-      mock.expects('exists').once().withArgs('/foo', flags: null, watch: null).yields null, false
-      mock.expects('create').once().withArgs('/foo', 'bar', flags: null, watch: null).yields null, 'foobar'
+      mock.expects('exists').once().withArgs('/foo').yields null, false
+      mock.expects('create').once().withArgs('/foo', 'bar').yields null, 'foobar'
       client.createOrUpdate '/foo', 'bar', (err, res) ->
-        mock.verify()
-        done()
-
-    it 'can be called with backwards compatible signature', (done) ->
-      client.exists = client._exists
-      mock.expects('exists').once().withArgs('/foo', flags: 1, watch: 2).yields null, false
-      mock.expects('create').once().withArgs('/foo', 'bar', flags: 1, watch: 2).yields null, 'foobar'
-      client.createOrUpdate '/foo', 'bar', 1, 2, (err, res) ->
         mock.verify()
         done()
 

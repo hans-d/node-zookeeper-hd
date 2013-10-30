@@ -13,12 +13,13 @@ describe('PlusClient with a FakeZookeeper', function() {
   PlusClient = null;
   client = zk = null;
   before(function() {
+    var _ref;
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerAllowables(['../../src/lib/PlusClient', './SimpleClient', 'path', 'events', 'async', 'underscore']);
+    mockery.registerAllowables(['path', 'events', 'async', 'underscore']);
     mockery.registerSubstitute('zookeeper', '../../src/lib/FakeZookeeper');
-    return PlusClient = require('../../src/lib/PlusClient');
+    return _ref = require('../../src/'), PlusClient = _ref.PlusClient, _ref;
   });
   after(function() {
     mockery.deregisterAll();
