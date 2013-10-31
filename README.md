@@ -5,8 +5,7 @@ Higher level (normalized) client for Zookeeper.
 
 Uses https://github.com/yfinkelstein/node-zookeeper as underlying client.
 
-https://www.codeship.io/projects/7dfd7080-2488-0131-ebed-1638c6b733e0/status
-
+[ ![Codeship Status for hans-d/node-zookeeper-hd](https://www.codeship.io/projects/7dfd7080-2488-0131-ebed-1638c6b733e0/status?branch=master)](https://www.codeship.io/projects/8877)
 
 
 API
