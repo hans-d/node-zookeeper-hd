@@ -1,6 +1,6 @@
 // This file has been generated from coffee source files
 
-var SimpleClientStub, mockery, should, sinon;
+var FakeZookeeper, mockery, should, sinon;
 
 should = require('should');
 
@@ -8,7 +8,7 @@ sinon = require('sinon');
 
 mockery = require('mockery');
 
-SimpleClientStub = require('../lib/simpleClientStub');
+FakeZookeeper = require('../../src/lib/FakeZookeeper');
 
 describe('PlusClient Class', function() {
   var PlusClient, client, mock, stub;
@@ -19,8 +19,8 @@ describe('PlusClient Class', function() {
     mockery.enable({
       useCleanCache: true
     });
-    mockery.registerMock('./lib/SimpleClient', SimpleClientStub);
-    mockery.registerAllowables(['async', 'underscore', 'path', 'events', '..', '../../src/', './lib/PlusClient', './lib/FakeZookeeper']);
+    mockery.registerMock('zookeeper', FakeZookeeper);
+    mockery.registerAllowables(['async', 'underscore', 'path', 'events', '..', '../../src/', './lib/PlusClient', './lib/SimpleClient']);
     return _ref = require('../../src/'), PlusClient = _ref.PlusClient, _ref;
   });
   after(function() {

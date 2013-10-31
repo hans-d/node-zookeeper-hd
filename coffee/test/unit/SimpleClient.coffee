@@ -2,12 +2,8 @@ should = require 'should'
 mockery = require 'mockery'
 sinon = require 'sinon'
 
-zookeeperStub = require '../lib/zookeeperStub'
+FakeZookeeper = require '../../src/lib/FakeZookeeper'
 
-# SimpleClient uses Zookeeper client, here we will use a test double for it.
-# (so we can unit test without needing a zookeeper instance)
-# Set up for modified require-s is done in #before
-#
 # simply passes the various data, so very generic fake values are used in the tests
 
 describe 'SimpleClient Class', ->
@@ -21,7 +17,7 @@ describe 'SimpleClient Class', ->
     mockery.enable useCleanCache: true
     mockery.registerAllowables [ '../../src/lib/SimpleClient', 'path', 'underscore' ]
     # replace modules for testing
-    mockery.registerMock 'zookeeper', zookeeperStub.Client
+    mockery.registerMock 'zookeeper', FakeZookeeper
     # load module under test, using replaced require-d modules
     SimpleClient = require '../../src/lib/SimpleClient'
 
@@ -40,12 +36,12 @@ describe 'SimpleClient Class', ->
 
     it 'has a zookeeper client', ->
       client = new SimpleClient()
-      client.client.should.be.instanceof zookeeperStub.Client # replaced version
+      client.client.should.be.instanceof FakeZookeeper # replaced version
       client.root.should.equal '/'
 
     it 'can have a root', ->
       client = new SimpleClient root: '/some/Root'
-      client.client.should.be.instanceof zookeeperStub.Client # replaced version
+      client.client.should.be.instanceof FakeZookeeper # replaced version
       client.root.should.equal '/some/Root'
 
 

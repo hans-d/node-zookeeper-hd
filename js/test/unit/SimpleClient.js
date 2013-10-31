@@ -1,6 +1,6 @@
 // This file has been generated from coffee source files
 
-var mockery, should, sinon, zookeeperStub;
+var FakeZookeeper, mockery, should, sinon;
 
 should = require('should');
 
@@ -8,7 +8,7 @@ mockery = require('mockery');
 
 sinon = require('sinon');
 
-zookeeperStub = require('../lib/zookeeperStub');
+FakeZookeeper = require('../../src/lib/FakeZookeeper');
 
 describe('SimpleClient Class', function() {
   var SimpleClient, clientWithRoot, clientWithoutRoot, stub;
@@ -19,7 +19,7 @@ describe('SimpleClient Class', function() {
       useCleanCache: true
     });
     mockery.registerAllowables(['../../src/lib/SimpleClient', 'path', 'underscore']);
-    mockery.registerMock('zookeeper', zookeeperStub.Client);
+    mockery.registerMock('zookeeper', FakeZookeeper);
     return SimpleClient = require('../../src/lib/SimpleClient');
   });
   after(function() {
@@ -39,7 +39,7 @@ describe('SimpleClient Class', function() {
     it('has a zookeeper client', function() {
       var client;
       client = new SimpleClient();
-      client.client.should.be["instanceof"](zookeeperStub.Client);
+      client.client.should.be["instanceof"](FakeZookeeper);
       return client.root.should.equal('/');
     });
     return it('can have a root', function() {
@@ -47,7 +47,7 @@ describe('SimpleClient Class', function() {
       client = new SimpleClient({
         root: '/some/Root'
       });
-      client.client.should.be["instanceof"](zookeeperStub.Client);
+      client.client.should.be["instanceof"](FakeZookeeper);
       return client.root.should.equal('/some/Root');
     });
   });

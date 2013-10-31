@@ -6,12 +6,15 @@ Uses semantic versioning
 
 0.x - Unstable API
 ---
+- 0.5:
+    - FakeZookeeper removed from index, should be required explicitly
+
 - 0.4:
     - Added documentation in source
     - Removed deprecated methods/signature
 
 - 0.3:
-    - FakeZookeper added
+    - FakeZookeeper added
 
 - 0.2:
     - PlusClient

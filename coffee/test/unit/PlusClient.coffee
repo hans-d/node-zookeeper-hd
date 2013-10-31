@@ -1,8 +1,8 @@
 should = require 'should'
 sinon = require 'sinon'
 mockery = require 'mockery'
-SimpleClientStub = require '../lib/simpleClientStub'
 
+FakeZookeeper = require '../../src/lib/FakeZookeeper'
 
 describe 'PlusClient Class', ->
   PlusClient = null
@@ -13,12 +13,12 @@ describe 'PlusClient Class', ->
     mockery.enable useCleanCache: true
 
     # replace modules for testing
-    mockery.registerMock './lib/SimpleClient', SimpleClientStub
+    mockery.registerMock 'zookeeper', FakeZookeeper
 
     # allowed modules
     mockery.registerAllowables [
       'async', 'underscore', 'path', 'events',
-      '..', '../../src/', './lib/PlusClient', './lib/FakeZookeeper'
+      '..', '../../src/', './lib/PlusClient', './lib/SimpleClient'
     ]
 
     # load module under test, using replaced require-d modules
