@@ -20,7 +20,7 @@ describe('PlusClient Class', function() {
       useCleanCache: true
     });
     mockery.registerMock('zookeeper', FakeZookeeper);
-    mockery.registerAllowables(['async', 'underscore', 'path', 'events', '..', '../../src/', './lib/PlusClient', './lib/SimpleClient']);
+    mockery.registerAllowables(['async', 'underscore', 'path', 'events', '..', '../../src/', './lib/PlusClient', './lib/SimpleClient', './lib/FakeZookeeper']);
     return _ref = require('../../src/'), PlusClient = _ref.PlusClient, _ref;
   });
   after(function() {

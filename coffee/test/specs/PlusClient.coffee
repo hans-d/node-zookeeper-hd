@@ -18,7 +18,7 @@ describe 'PlusClient Class', ->
     # allowed modules
     mockery.registerAllowables [
       'async', 'underscore', 'path', 'events',
-      '..', '../../src/', './lib/PlusClient', './lib/SimpleClient'
+      '..', '../../src/', './lib/PlusClient', './lib/SimpleClient', './lib/FakeZookeeper'
     ]
 
     # load module under test, using replaced require-d modules

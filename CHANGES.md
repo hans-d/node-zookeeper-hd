@@ -7,7 +7,7 @@ Uses semantic versioning
 0.x - Unstable API
 ---
 - 0.5:
-    - FakeZookeeper removed from index, should be required explicitly
+    - [so same as 0.4]
 
 - 0.4:
     - Added documentation in source

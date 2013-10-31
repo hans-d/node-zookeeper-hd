@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "SimpleClient.js",
-  "sourceRoot": "../../../coffee/test/unit/",
+  "sourceRoot": "../../../coffee/test/specs/",
   "sources": [
     "SimpleClient.coffee"
   ],

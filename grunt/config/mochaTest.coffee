@@ -9,26 +9,26 @@ module.exports = {
     options:
       reporter: 'spec'
       require: 'coffee-script'
-    src: [ '<%= mochaTest.dir.coffee %>/unit/*.coffee' ]
+    src: [ '<%= mochaTest.dir.coffee %>/specs/*.coffee' ]
 
   unitDot:
     options:
       reporter: 'dot'
       require: 'coffee-script'
-    src: [ '<%= mochaTest.dir.coffee %>/unit/*.coffee' ]
+    src: [ '<%= mochaTest.dir.coffee %>/specs/*.coffee' ]
 
   unitJS:
     options:
       reporter: 'dot'
       require: 'grunt/blanketJS'
-    src: [ '<%= mochaTest.dir.js %>/unit/*.js' ]
+    src: [ '<%= mochaTest.dir.js %>/specs/*.js' ]
 
   coverageJS:
     options:
       reporter: 'html-cov'
       quiet: true
       captureFile: 'coverageJS.html'
-    src: [ '<%= mochaTest.dir.js %>/unit/*.js' ]
+    src: [ '<%= mochaTest.dir.js %>/specs/*.js' ]
 
   integration:
     options:

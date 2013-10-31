@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "FakeZookeeper.js",
-  "sourceRoot": "../../../coffee/test/unit/",
+  "sourceRoot": "../../../coffee/test/specs/",
   "sources": [
     "FakeZookeeper.coffee"
   ],
